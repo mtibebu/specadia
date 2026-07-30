@@ -1,0 +1,15 @@
+{
+  "name": "specadia",
+  "description": "The official local marketplace for the Specadia Claude Code integration.",
+  "owner": {
+    "name": "Mesfin Tibebu"
+  },
+  "plugins": [
+    {
+      "name": "specadia",
+      "source": "./plugins/claude-code/specadia",
+      "description": "Generate traceable requirements, designs, and implementation contracts from Claude Code.",
+      "version": "0.2.1"
+    }
+  ]
+}

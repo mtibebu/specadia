@@ -1,0 +1,15 @@
+{
+  "name": "specadia",
+  "version": "0.2.1",
+  "description": "Generate traceable requirements, designs, and implementation contracts from Claude Code.",
+  "author": {
+    "name": "Mesfin Tibebu"
+  },
+  "license": "MIT",
+  "keywords": [
+    "requirements",
+    "design",
+    "implementation-contract",
+    "traceability"
+  ]
+}

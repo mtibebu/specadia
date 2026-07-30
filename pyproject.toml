@@ -1,0 +1,71 @@
+[project]
+name = "specadia"
+version = "0.2.0"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.12,<3.14"
+dependencies = [
+    "loguru>=0.7.0",
+    "pydantic>=2.5.0",
+    "rich>=13.7.0",
+    "typer>=0.20.0",
+]
+
+[project.optional-dependencies]
+agents = [
+    "anthropic>=0.7.0",
+    "google-adk>=2.5.0,<3",
+    "google-genai>=1.63.0",
+    "litellm>=1.84.0,<1.85",
+    "ollama>=0.6.1",
+    "openai>=1.10.0",
+    "python-dotenv>=1.0.0",
+    "requests>=2.31.0",
+]
+rag = [
+    "faiss-cpu>=1.13.2",
+    "langchain-openai>=1.1.9",
+    "langchain-text-splitters>=1.0.0",
+    "pdfplumber>=0.11.8",
+    "pypdf>=6.3.0",
+    "python-docx>=1.2.0",
+    "xmltodict>=1.0.2",
+]
+dev = ["autopep8>=2.0.0"]
+test = ["pytest>=7.4.0", "pytest-asyncio>=0.23.0", "pytest-mock>=1.17.0"]
+
+[project.scripts]
+specadia = "specadia.cli:app"
+specadia-contract = "specadia.contracts.cli:app"
+specadia-doctor = "specadia.diagnostics.doctor:app"
+
+[tool.pyink]
+line-length = 100
+unstable = true
+pyink-indentation = 2
+pyink-use-majority-quotes = true
+pyink-annotation-pragmas = [
+  "noqa",
+  "pylint:",
+  "type: ignore",
+  "pytype:",
+  "mypy:",
+  "pyright:",
+  "pyre-",
+]
+
+[tool.pytest.ini_options]
+markers = [
+    "live: requires an explicitly configured external model provider",
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+py-modules = ["main"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+namespaces = false

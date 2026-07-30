@@ -1,0 +1,20 @@
+{
+  "name": "specadia",
+  "version": "0.2.0",
+  "description": "Generate traceable requirements, designs, and implementation contracts with Specadia.",
+  "keywords": [
+    "requirements",
+    "design",
+    "implementation-contract",
+    "traceability"
+  ],
+  "author": "Mesfin Tibebu",
+  "license": "MIT",
+  "skills": "./plugins/kimi/specadia/skills/",
+  "interface": {
+    "displayName": "Specadia",
+    "shortDescription": "Generate traceable implementation plans",
+    "longDescription": "Use the Specadia CLI to generate reviewed requirements, system designs, implementation contracts, and traceability artifacts.",
+    "developerName": "Mesfin Tibebu"
+  }
+}
