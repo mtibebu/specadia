@@ -10,24 +10,6 @@ via Pydantic.
 It can also turn an existing SRS and optional design document into a deterministic
 implementation contract for Codex, Claude Code, or a generic coding harness.
 
-## Plugin verification status
-
-The thin coding-agent adapters have different verification levels:
-
-- **Host installation verified:** Claude Code and Codex are installed, enabled, and expose
-  Specadia's commands or skill.
-- **Adapter execution verified:** OpenCode and Pi load their native adapters and register the
-  Specadia skill.
-- **Local installation verified, host not exercised:** the Cline skill installer and Cursor
-  local-plugin link were tested, but the Cline and Cursor applications were not available for
-  an in-host workflow test.
-- **Static validation only:** Kimi Code CLI, Grok Build CLI, Devin CLI, GitHub Copilot, Factory
-  Droid, Qwen Code, and Antigravity CLI. Their manifests or skills validate, but their host CLIs
-  were not installed for end-to-end testing.
-
-All repository plugin manifests parse and all bundled Agent Skills pass structural validation.
-These checks do not constitute an end-to-end model-backed Specadia run in every host.
-
 ## Claude Code plugin
 
 Specadia includes a thin Claude Code plugin. The plugin keeps the Python CLI as the
