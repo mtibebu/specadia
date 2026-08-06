@@ -61,7 +61,7 @@ def test_rag_database_cli(tmp_path):
 
 
 def test_run_help_exposes_collection_selection():
-  result = runner.invoke(app, ["run", "--help"])
+  result = runner.invoke(app, ["run", "--help"], color=False)
 
   assert result.exit_code == 0
   assert "--rag-collection" in result.output
