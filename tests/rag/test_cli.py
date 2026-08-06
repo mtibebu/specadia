@@ -1,5 +1,6 @@
 import sqlite3
 
+from click import unstyle
 from typer.testing import CliRunner
 
 from main import app
@@ -61,8 +62,9 @@ def test_rag_database_cli(tmp_path):
 
 
 def test_run_help_exposes_collection_selection():
-  result = runner.invoke(app, ["run", "--help"], color=False)
+  result = runner.invoke(app, ["run", "--help"])
+  output = unstyle(result.output)
 
   assert result.exit_code == 0
-  assert "--rag-collection" in result.output
-  assert "--rag-index-dir" in result.output
+  assert "--rag-collection" in output
+  assert "--rag-index-dir" in output
