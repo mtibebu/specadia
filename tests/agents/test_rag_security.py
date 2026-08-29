@@ -2,8 +2,8 @@
 
 import pytest
 
-from agents.agent_util import add_rag_tool
-from agents.agent_util import format_rag_few_shot
+from specadia._agents.agent_util import add_rag_tool
+from specadia._agents.agent_util import format_rag_few_shot
 
 
 def test_rag_prompt_labels_snippets_as_untrusted_data():

@@ -1,6 +1,6 @@
 """Prompt template for the requirements collector agent."""
 
-from prompt_templates.kb.requirements_kb import REQUIREMENT_TYPES
+from specadia._prompt_templates.kb.requirements_kb import REQUIREMENT_TYPES
 
 COLLECTOR_AGENT_SYSTEM_PROMPT = f"""You are an expert software requirements collector. Plan and generate raw functional and non-functional requirements for the application requested by the user.
 

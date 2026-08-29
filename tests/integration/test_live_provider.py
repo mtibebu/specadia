@@ -7,7 +7,7 @@ import os
 
 import pytest
 
-from contracts.specadia_pipeline import SpecadiaPipeline
+from specadia._contracts.specadia_pipeline import SpecadiaPipeline
 
 
 @pytest.mark.asyncio

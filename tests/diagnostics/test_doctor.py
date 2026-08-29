@@ -1,7 +1,7 @@
 import sys
 from pathlib import Path
 
-from diagnostics.doctor import run_checks
+from specadia._diagnostics.doctor import run_checks
 
 
 def test_openai_requires_key(tmp_path: Path):

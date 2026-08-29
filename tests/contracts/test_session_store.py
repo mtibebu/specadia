@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from contracts.session_store import RunCheckpoint
-from contracts.session_store import SessionStore
+from specadia._contracts.session_store import RunCheckpoint
+from specadia._contracts.session_store import SessionStore
 
 
 def test_atomic_round_trip(tmp_path: Path):

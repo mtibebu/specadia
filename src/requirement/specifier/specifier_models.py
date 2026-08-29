@@ -2,8 +2,8 @@ from typing import List
 
 from pydantic import BaseModel, Field
 
-from requirement.analyzer import AnalyzerOutputModel
-from requirement.collector import CollectorOutputModel
+from specadia._requirement.analyzer import AnalyzerOutputModel
+from specadia._requirement.collector import CollectorOutputModel
 
 
 class SpecifierInputModel(BaseModel):

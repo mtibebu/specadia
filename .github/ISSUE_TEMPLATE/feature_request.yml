@@ -1,0 +1,23 @@
+name: Feature request
+description: Propose a contract-engine or harness-adapter improvement
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What design-to-implementation handoff problem should Specadia solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Describe inputs, outputs, and the affected harness if applicable.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered

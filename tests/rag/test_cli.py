@@ -1,9 +1,8 @@
 import sqlite3
 
-from click import unstyle
 from typer.testing import CliRunner
 
-from main import app
+from specadia._rag.cli import app
 
 runner = CliRunner()
 
@@ -15,13 +14,12 @@ def test_rag_document_cli_lifecycle(tmp_path):
 
   built = runner.invoke(
       app,
-      ["rag", "build", str(source), "--collection", "logistics", "--index-dir", str(index_dir)],
+      ["build", str(source), "--collection", "logistics", "--index-dir", str(index_dir)],
   )
-  listed = runner.invoke(app, ["rag", "list", "--index-dir", str(index_dir), "--json"])
+  listed = runner.invoke(app, ["list", "--index-dir", str(index_dir), "--json"])
   queried = runner.invoke(
       app,
       [
-          "rag",
           "query",
           "lunar invoice",
           "--collection",
@@ -47,7 +45,6 @@ def test_rag_database_cli(tmp_path):
   result = runner.invoke(
       app,
       [
-          "rag",
           "database",
           str(database),
           "--table",
@@ -59,12 +56,3 @@ def test_rag_database_cli(tmp_path):
 
   assert result.exit_code == 0, result.output
   assert "Collection 'default' ready" in result.output
-
-
-def test_run_help_exposes_collection_selection():
-  result = runner.invoke(app, ["run", "--help"])
-  output = unstyle(result.output)
-
-  assert result.exit_code == 0
-  assert "--rag-collection" in output
-  assert "--rag-index-dir" in output

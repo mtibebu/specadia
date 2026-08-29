@@ -5,7 +5,7 @@ from typing import Optional
 
 from loguru import logger
 
-from utils.logger import get_log_path
+from specadia._utils.logger import get_log_path
 
 from .constants import OutputType
 

@@ -1,6 +1,6 @@
 """Prompt template for the single agent."""
 
-from prompt_templates.kb.requirements_kb import (
+from specadia._prompt_templates.kb.requirements_kb import (
     REQUIREMENT_TYPES,
 )
 

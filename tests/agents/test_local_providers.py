@@ -1,6 +1,6 @@
 import pytest
 
-from agents.local_providers import is_local_model, local_openai_model_kwargs
+from specadia._agents.local_providers import is_local_model, local_openai_model_kwargs
 
 
 @pytest.mark.parametrize(

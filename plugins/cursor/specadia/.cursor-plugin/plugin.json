@@ -1,6 +1,6 @@
 {
   "name": "specadia",
-  "description": "Generate traceable requirements, designs, and Cursor implementation contracts.",
+  "description": "Convert approved requirements and designs into traceable Cursor contracts.",
   "version": "0.2.0",
   "author": {
     "name": "Mesfin Tibebu"

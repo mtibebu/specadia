@@ -1,6 +1,6 @@
 """Prompt template for the design documenter agent."""
 
-from prompt_templates.templates.design_template import DESIGN_TEMPLATE
+from specadia._prompt_templates.templates.design_template import DESIGN_TEMPLATE
 
 DOCUMENTER_AGENT_SYSTEM_PROMPT = f"""You are an expert software design documenter. 
 Create a Software Design document from the designer agent tool output provided as an input.

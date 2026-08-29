@@ -1,11 +1,11 @@
 {
   "name": "specadia",
   "version": "0.2.0",
-  "description": "Generate traceable requirements, designs, and Codex implementation contracts.",
+  "description": "Convert approved requirements and designs into traceable Codex contracts.",
   "author": {
     "name": "Mesfin Tibebu"
   },
-  "license": "MIT",
+  "license": "Apache-2.0",
   "keywords": [
     "requirements",
     "design",
@@ -15,8 +15,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Specadia",
-    "shortDescription": "Generate traceable implementation plans.",
-    "longDescription": "Use the installed Specadia CLI to generate reviewed requirements, system designs, Codex AGENTS.md contracts, and requirement traceability artifacts.",
+    "shortDescription": "Convert designs into traceable contracts.",
+    "longDescription": "Use the installed Specadia CLI to convert approved requirements and designs into Codex AGENTS.md contracts and requirement traceability artifacts.",
     "developerName": "Mesfin Tibebu",
     "category": "Productivity",
     "capabilities": [
@@ -24,7 +24,7 @@
       "Write"
     ],
     "defaultPrompt": [
-      "Use Specadia to turn this software intent into an approved Codex implementation contract.",
+      "Use Specadia to convert these approved requirements and design into a Codex implementation contract.",
       "Generate a Codex contract from my existing SRS and design.",
       "Review the traceability of my Specadia implementation plan."
     ]

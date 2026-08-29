@@ -5,7 +5,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from rag.knowledge_base import (
+from specadia._rag.knowledge_base import (
     KnowledgeBaseError,
     build_file_collection,
     chunk_text,
@@ -94,6 +94,26 @@ def test_build_incremental_status_and_retrieval(tmp_path):
   assert "xenon escrow certificate" in results[0]
   assert collection_status("space-law", index_dir)["embedding"]["provider"] == "local"
   assert list_collections(index_dir)[0]["collection"] == "space-law"
+  stored = "\n".join(
+      (index_dir / "space-law" / name).read_text(encoding="utf-8")
+      for name in ("manifest.json", "chunks.json")
+  )
+  assert str(tmp_path) not in stored
+
+
+def test_build_rejects_duplicate_basenames_without_storing_parent_paths(tmp_path):
+  first = tmp_path / "first"
+  second = tmp_path / "second"
+  first.mkdir()
+  second.mkdir()
+  (first / "policy.md").write_text("First policy.")
+  (second / "policy.md").write_text("Second policy.")
+
+  with pytest.raises(KnowledgeBaseError, match="filenames must be unique"):
+    build_file_collection(
+        [first / "policy.md", second / "policy.md"],
+        index_dir=tmp_path / "indexes",
+    )
 
 
 def test_build_rejects_symlinked_collection_destination(tmp_path):
@@ -206,3 +226,19 @@ def test_sqlite_row_limit_is_enforced(tmp_path):
 
   with pytest.raises(KnowledgeBaseError, match="row limit"):
     ingest_sqlite(database, table="facts", index_dir=tmp_path / "index", max_rows=1)
+
+
+def test_sqlite_execution_budget_is_enforced(tmp_path):
+  database = tmp_path / "budget.sqlite"
+  sqlite3.connect(database).close()
+
+  with pytest.raises(KnowledgeBaseError, match="execution budget"):
+    ingest_sqlite(
+        database,
+        query=(
+            "WITH RECURSIVE counter(value) AS (SELECT 1 UNION ALL "
+            "SELECT value + 1 FROM counter WHERE value < 100000000) SELECT sum(value) FROM counter"
+        ),
+        index_dir=tmp_path / "index",
+        sql_timeout_seconds=0.000001,
+    )

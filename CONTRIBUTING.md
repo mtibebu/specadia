@@ -1,0 +1,35 @@
+# Contributing
+
+Contributions are welcome through GitHub issues and pull requests.
+
+## Development setup
+
+Use Python 3.12 or 3.13 and work in a virtual environment:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -e ".[full,test,dev]"
+python -m pytest -q
+```
+
+Keep the public Python distribution dependency-light and under the `specadia` namespace. Harness
+adapters should remain thin: shared contract behavior belongs in the Python engine.
+
+Before opening a pull request, run the relevant tests and describe the input-to-output behavior
+that changed. Do not include credentials, generated run logs, local indexes, or environment files.
+
+## Release checks
+
+Maintainers should build from a clean checkout and inspect the artifacts before publishing:
+
+```bash
+python -m build
+python -m twine check dist/*
+python scripts/audit_distribution.py dist/*.whl
+uv lock --check
+npm pack --dry-run
+```
+
+Publishing, tagging, and creating a GitHub release are separate maintainer actions and are not
+performed by CI.

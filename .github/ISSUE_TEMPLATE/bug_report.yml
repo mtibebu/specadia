@@ -1,0 +1,45 @@
+name: Bug report
+description: Report reproducible incorrect behavior in Specadia
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Do not include credentials or private requirements/design artifacts.
+  - type: input
+    id: version
+    attributes:
+      label: Specadia version
+      placeholder: Output of `specadia --version`
+    validations:
+      required: true
+  - type: dropdown
+    id: interface
+    attributes:
+      label: Interface
+      options:
+        - Python CLI
+        - Claude Code adapter
+        - Codex adapter
+        - Other harness adapter
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Provide minimal, sanitized commands and input structure.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true

@@ -1,21 +1,16 @@
 ---
-description: Turn an intent into a reviewed Specadia requirements, design, and Claude implementation contract
-argument-hint: <software intent>
+description: Convert approved requirements and design artifacts into a Claude implementation contract
+argument-hint: <path-to-requirements> [path-to-design]
 allowed-tools: Bash
 ---
 
-Create a Specadia implementation plan for this intent:
+Create a Claude implementation contract from these approved artifacts:
 
 $ARGUMENTS
 
-Use the repository containing the current Claude Code session as project context.
-
-1. Verify that `specadia-contract` is available. If it is missing, stop and tell the user to
-   install Specadia with its `agents` extra.
-2. Run `specadia-contract from-intent` with the intent above, `--repo "$CLAUDE_PROJECT_DIR"`,
-   and `--harness claude`.
-3. Keep Specadia's interactive Collector approval enabled. Do not add `--yes`.
-4. After the run, summarize the generated SRS, design, Claude contract, and traceability
-   artifacts. Report their paths and any validation failures.
-5. Do not begin implementation unless the user separately asks Claude Code to implement the
-   approved contract.
+1. Verify `specadia` is available.
+2. Treat the first path as requirements and the optional second path as design. If paths were not
+   provided, request the READ-MAS outputs; Specadia does not generate designs.
+3. Run `specadia contract` with `--harness claude` and add `--design` only when supplied.
+4. Do not add `--force` without explicit authorization.
+5. Report generated contract and manifest paths. Do not begin implementation unless separately asked.

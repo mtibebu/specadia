@@ -2,7 +2,7 @@ from typing import List
 
 from pydantic import Field
 
-from agents import SpecadiaBaseModel
+from specadia._agents import SpecadiaBaseModel
 
 
 class CollectorOutputModel(SpecadiaBaseModel):

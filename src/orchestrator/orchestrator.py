@@ -21,12 +21,12 @@ from google.genai import types
 from loguru import logger
 
 from .read_wrapper import ReadWrapperAgent
-from orchestrator.constants import APP_NAME, MAX_RETRIES, RETRY_DELAY_BASE
-from orchestrator.session_manager import SessionManager
-from orchestrator.plugins import ConnectionRetryPlugin, SpecadiaRetryPlugin
-from single import SingleAgent
-from utils.constants import AgentRunMode
-from utils.logger import get_log_path
+from specadia._orchestrator.constants import APP_NAME, MAX_RETRIES, RETRY_DELAY_BASE
+from specadia._orchestrator.session_manager import SessionManager
+from specadia._orchestrator.plugins import ConnectionRetryPlugin, SpecadiaRetryPlugin
+from specadia._single import SingleAgent
+from specadia._utils.constants import AgentRunMode
+from specadia._utils.logger import get_log_path
 
 # Enable this to debug litellm
 # litellm._turn_on_debug()

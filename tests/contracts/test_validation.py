@@ -1,6 +1,6 @@
 import pytest
 
-from contracts.validation import validate_documents
+from specadia.contracts.validation import validate_documents
 
 
 def test_valid_documents_pass():

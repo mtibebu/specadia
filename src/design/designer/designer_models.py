@@ -1,6 +1,6 @@
 from pydantic import Field
 
-from agents import SpecadiaBaseModel
+from specadia._agents import SpecadiaBaseModel
 
 
 class DesignerOutputModel(SpecadiaBaseModel):

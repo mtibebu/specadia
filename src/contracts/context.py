@@ -3,6 +3,7 @@
 import json
 from dataclasses import dataclass
 from pathlib import Path
+import re
 
 _MANIFESTS = {
     "pyproject.toml": "Python",
@@ -23,7 +24,20 @@ _EXCLUDED_PARTS = {
     "runs",
     "__pycache__",
 }
-_SECRET_NAMES = {".env", ".npmrc", ".pypirc", "credentials", "secrets"}
+_SENSITIVE_NAME_RE = re.compile(
+    r"(?:^|[._-])(?:env|secret|secrets|credential|credentials|token|tokens|password|"
+    r"private[-_]?key|id[-_]?rsa|id[-_]?ed25519)(?:$|[._-])",
+    re.IGNORECASE,
+)
+_SENSITIVE_SUFFIXES = {".key", ".keystore", ".p12", ".pem", ".pfx"}
+
+
+def _is_sensitive_path(path: Path) -> bool:
+  """Return whether a relative path is likely to disclose credential material."""
+  return any(
+      _SENSITIVE_NAME_RE.search(part) or Path(part).suffix.lower() in _SENSITIVE_SUFFIXES
+      for part in path.parts
+  )
 
 
 @dataclass(frozen=True)
@@ -53,7 +67,7 @@ def inspect_repository(
     max_files: int = 200,
     max_convention_chars: int = 12_000,
 ) -> RepositoryContext:
-  """Inspect metadata without reading source bodies or secrets."""
+  """Inspect bounded metadata without disclosing local paths or file contents."""
   resolved = root.expanduser().resolve()
   if not resolved.is_dir():
     raise ValueError(f"Repository directory does not exist: {root}")
@@ -65,7 +79,7 @@ def inspect_repository(
     relative = path.relative_to(resolved)
     if any(part in _EXCLUDED_PARTS for part in relative.parts):
       continue
-    if path.is_file() and path.name.lower() not in _SECRET_NAMES:
+    if path.is_file() and not _is_sensitive_path(relative):
       paths.append(str(relative))
     if len(paths) >= max_files:
       break
@@ -75,12 +89,12 @@ def inspect_repository(
   for name in _CONVENTION_FILES:
     path = resolved / name
     if path.is_file() and remaining > 0:
-      content = path.read_text(encoding="utf-8", errors="replace")[:remaining]
-      conventions[name] = content
-      remaining -= len(content)
+      marker = "[present; content omitted from repository context]"
+      conventions[name] = marker
+      remaining -= len(marker)
 
   return RepositoryContext(
-      root=str(resolved),
+      root=".",
       languages=languages,
       manifests=manifests,
       commands=_commands(resolved),

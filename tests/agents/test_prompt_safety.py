@@ -1,13 +1,13 @@
 import pytest
 
-from agents.prompt_safety import require_bounded_strings
-from agents.prompt_safety import untrusted_json
-from agents.prompt_safety import untrusted_text
-from prompt_templates import ANALYZER_AGENT_SYSTEM_PROMPT
-from prompt_templates import COLLECTOR_AGENT_SYSTEM_PROMPT
-from prompt_templates import DESIGNER_AGENT_SYSTEM_PROMPT
-from prompt_templates import DOCUMENTER_AGENT_SYSTEM_PROMPT
-from prompt_templates import SPECIFIER_AGENT_SYSTEM_PROMPT
+from specadia._agents.prompt_safety import require_bounded_strings
+from specadia._agents.prompt_safety import untrusted_json
+from specadia._agents.prompt_safety import untrusted_text
+from specadia._prompt_templates import ANALYZER_AGENT_SYSTEM_PROMPT
+from specadia._prompt_templates import COLLECTOR_AGENT_SYSTEM_PROMPT
+from specadia._prompt_templates import DESIGNER_AGENT_SYSTEM_PROMPT
+from specadia._prompt_templates import DOCUMENTER_AGENT_SYSTEM_PROMPT
+from specadia._prompt_templates import SPECIFIER_AGENT_SYSTEM_PROMPT
 
 
 @pytest.mark.parametrize(

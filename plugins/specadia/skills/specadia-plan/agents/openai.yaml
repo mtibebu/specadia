@@ -1,4 +1,4 @@
 interface:
   display_name: "Specadia Plan"
   short_description: "Generate traceable software implementation plans"
-  default_prompt: "Use $specadia-plan to turn this software intent into an approved implementation contract."
+  default_prompt: "Use $specadia-plan to convert my approved requirements and design into a Codex implementation contract."

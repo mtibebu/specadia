@@ -2,7 +2,7 @@
 
 from typing import Optional
 from pathlib import Path
-from agents import (
+from specadia._agents import (
     AgentBase,
 )
 from dotenv import load_dotenv
@@ -14,10 +14,10 @@ import warnings
 warnings.filterwarnings("ignore", category=UserWarning)
 
 from google.adk.agents import Agent, SequentialAgent
-from utils.logger import (get_run_id, setup_logging)
-from design import DesignWrapperAgent
-from requirement import RequirementsWrapperAgent
-from utils.constants import (
+from specadia._utils.logger import (get_run_id, setup_logging)
+from specadia._design import DesignWrapperAgent
+from specadia._requirement import RequirementsWrapperAgent
+from specadia._utils.constants import (
     AgentRunMode,
     DEFAULT_MODEL_NAME,
 )

@@ -1,11 +1,11 @@
 {
   "name": "specadia",
-  "version": "0.2.1",
-  "description": "Generate traceable requirements, designs, and implementation contracts from Claude Code.",
+  "version": "0.2.0",
+  "description": "Convert approved requirements and designs into traceable Claude Code contracts.",
   "author": {
     "name": "Mesfin Tibebu"
   },
-  "license": "MIT",
+  "license": "Apache-2.0",
   "keywords": [
     "requirements",
     "design",

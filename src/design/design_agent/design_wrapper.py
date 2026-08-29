@@ -1,13 +1,13 @@
 """Wrapper agent to create a workflow of the Design agents."""
 
 from typing import Optional
-from agents import AgentBase
-from utils.constants import AgentRunMode, DEFAULT_MODEL_NAME
+from specadia._agents import AgentBase
+from specadia._utils.constants import AgentRunMode, DEFAULT_MODEL_NAME
 
 from google.adk.agents import SequentialAgent
-from utils.logger import (get_run_id, setup_logging)
-from design import DesignerAgent
-from design import DocumenterAgent
+from specadia._utils.logger import (get_run_id, setup_logging)
+from specadia._design import DesignerAgent
+from specadia._design import DocumenterAgent
 
 
 class DesignWrapperAgent(AgentBase):

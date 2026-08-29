@@ -2,14 +2,14 @@ from pathlib import Path
 
 import pytest
 
-from contracts.models import Harness
-from contracts.session_store import SessionStore
-from contracts.workflow import ApprovalAction
-from contracts.workflow import ApprovalDecision
-from contracts.workflow import ContractWorkflow
-from contracts.workflow import GeneratedDocuments
-from contracts.workflow import PartialDocumentsError
-from contracts.workflow import WorkflowCancelled
+from specadia._contracts.models import Harness
+from specadia._contracts.session_store import SessionStore
+from specadia._contracts.workflow import ApprovalAction
+from specadia._contracts.workflow import ApprovalDecision
+from specadia._contracts.workflow import ContractWorkflow
+from specadia._contracts.workflow import GeneratedDocuments
+from specadia._contracts.workflow import PartialDocumentsError
+from specadia._contracts.workflow import WorkflowCancelled
 
 
 class Gate:
