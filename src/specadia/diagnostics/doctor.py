@@ -1,5 +1,5 @@
 """Primary Specadia diagnostics CLI."""
 
-from diagnostics.doctor import app
+from specadia._diagnostics.doctor import app, doctor, run_checks
 
-__all__ = ["app"]
+__all__ = ["app", "doctor", "run_checks"]

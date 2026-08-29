@@ -1,8 +1,8 @@
 """This is the first agent in the Design agent pipeline and generates the system and component design for the given requirements."""
 
 from typing import Optional
-from agents import (AgentBase, get_model_from, get_agent_config)
-from utils.constants import (
+from specadia._agents import (AgentBase, get_model_from, get_agent_config)
+from specadia._utils.constants import (
     AgentRunMode,
 
     DEFAULT_MODEL_NAME,
@@ -12,10 +12,10 @@ from utils.constants import (
 import time
 
 from google.adk.agents import Agent
-from utils.logger import (get_run_id, setup_logging)
-from prompt_templates import DESIGNER_AGENT_SYSTEM_PROMPT
+from specadia._utils.logger import (get_run_id, setup_logging)
+from specadia._prompt_templates import DESIGNER_AGENT_SYSTEM_PROMPT
 from .designer_models import DesignerOutputModel
-from agents import (before_agent, after_agent, before_model, after_model)
+from specadia._agents import (before_agent, after_agent, before_model, after_model)
 
 
 class DesignerAgent(AgentBase):

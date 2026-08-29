@@ -5,13 +5,13 @@ from typing import Optional
 
 from google.adk.agents import Agent
 
-from agents import (AgentBase, get_model_from)
-from prompt_templates import SPECIFIER_AGENT_SYSTEM_PROMPT
-from utils.constants import DEFAULT_MODEL_NAME, AgentRunMode
-from utils.logger import (get_run_id, setup_logging)
+from specadia._agents import (AgentBase, get_model_from)
+from specadia._prompt_templates import SPECIFIER_AGENT_SYSTEM_PROMPT
+from specadia._utils.constants import DEFAULT_MODEL_NAME, AgentRunMode
+from specadia._utils.logger import (get_run_id, setup_logging)
 
 from .specifier_models import SpecifierInputModel
-from agents import (before_agent, after_agent, before_model, after_model, get_agent_config)
+from specadia._agents import (before_agent, after_agent, before_model, after_model, get_agent_config)
 
 
 class SpecifierAgent(AgentBase):

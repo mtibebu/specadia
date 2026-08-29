@@ -67,7 +67,9 @@ class ContractGenerator:
   @staticmethod
   def _source(kind: str, path: Path) -> SourceDocument:
     digest = hashlib.sha256(path.read_bytes()).hexdigest()
-    return SourceDocument(kind=kind, path=str(path), sha256=digest)
+    # Contracts are commonly shared with coding harnesses. A basename is sufficient for
+    # traceability and avoids leaking usernames or local directory layouts.
+    return SourceDocument(kind=kind, path=path.name, sha256=digest)
 
   @staticmethod
   def _project_name(spec_path: Path) -> str:

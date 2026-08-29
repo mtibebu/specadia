@@ -3,7 +3,7 @@
 import re
 from dataclasses import dataclass
 
-from contracts.requirement_ids import normalize_requirement_id
+from .requirement_ids import normalize_requirement_id
 
 _REQ_ID = re.compile(
     r"(?<![A-Za-z0-9])(?:FR|NFR|REQ|AC)[-_ ]?\d+(?![A-Za-z0-9])",

@@ -1,10 +1,23 @@
 [project]
 name = "specadia"
 version = "0.2.0"
-license = { text = "Apache-2.0" }
+description = "Convert READ-MAS requirements and designs into coding-agent contracts and harness adapters"
+authors = [{ name = "Mesfin Tibebu" }]
+readme = "README.md"
+license = "Apache-2.0"
 requires-python = ">=3.12,<3.14"
+keywords = ["coding-agents", "requirements", "software-design", "specifications"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Code Generators",
+]
 dependencies = [
-    "loguru>=0.7.0",
     "pydantic>=2.5.0",
     "rich>=13.7.0",
     "typer>=0.20.0",
@@ -12,26 +25,45 @@ dependencies = [
 
 [project.optional-dependencies]
 agents = [
-    "anthropic>=0.7.0",
+    "aiohttp>=3.13.0,<4",
+    "anthropic>=0.70.0,<1",
     "google-adk>=2.5.0,<3",
-    "google-genai>=1.63.0",
+    "google-genai>=1.63.0,<3",
     "litellm>=1.84.0,<1.85",
-    "ollama>=0.6.1",
-    "openai>=1.10.0",
-    "python-dotenv>=1.0.0",
-    "requests>=2.31.0",
+    "loguru>=0.7.0,<1",
+    "ollama>=0.6.1,<1",
+    "openai>=1.109.0,<3",
+    "python-dotenv>=1.0.0,<2",
+    "requests>=2.32.4,<3",
 ]
 rag = [
-    "faiss-cpu>=1.13.2",
-    "langchain-openai>=1.1.9",
-    "langchain-text-splitters>=1.0.0",
-    "pdfplumber>=0.11.8",
-    "pypdf>=6.3.0",
-    "python-docx>=1.2.0",
-    "xmltodict>=1.0.2",
+    "faiss-cpu>=1.13.2,<2",
+    "numpy>=2.0.0,<3",
+    "pypdf>=6.3.0,<7",
 ]
-dev = ["autopep8>=2.0.0"]
+full = [
+    "aiohttp>=3.13.0,<4",
+    "anthropic>=0.70.0,<1",
+    "faiss-cpu>=1.13.2,<2",
+    "google-adk>=2.5.0,<3",
+    "google-genai>=1.63.0,<3",
+    "litellm>=1.84.0,<1.85",
+    "loguru>=0.7.0,<1",
+    "numpy>=2.0.0,<3",
+    "ollama>=0.6.1,<1",
+    "openai>=1.109.0,<3",
+    "pypdf>=6.3.0,<7",
+    "python-dotenv>=1.0.0,<2",
+    "requests>=2.32.4,<3",
+]
+dev = ["build>=1.2.2", "twine>=6.0.0"]
 test = ["pytest>=7.4.0", "pytest-asyncio>=0.23.0", "pytest-mock>=1.17.0"]
+
+[project.urls]
+Homepage = "https://github.com/mtibebu/specadia"
+Documentation = "https://github.com/mtibebu/specadia#readme"
+Issues = "https://github.com/mtibebu/specadia/issues"
+Repository = "https://github.com/mtibebu/specadia.git"
 
 [project.scripts]
 specadia = "specadia.cli:app"
@@ -63,9 +95,51 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-package-dir = {"" = "src"}
-py-modules = ["main"]
+packages = [
+    "specadia",
+    "specadia.contracts",
+    "specadia.diagnostics",
+    "specadia._contracts",
+    "specadia._diagnostics",
+    "specadia._agents",
+    "specadia._design",
+    "specadia._design.design_agent",
+    "specadia._design.designer",
+    "specadia._design.documenter",
+    "specadia._orchestrator",
+    "specadia._prompt_templates",
+    "specadia._prompt_templates.kb",
+    "specadia._prompt_templates.templates",
+    "specadia._rag",
+    "specadia._requirement",
+    "specadia._requirement.analyzer",
+    "specadia._requirement.collector",
+    "specadia._requirement.re_agent",
+    "specadia._requirement.specifier",
+    "specadia._single",
+    "specadia._tools",
+    "specadia._utils",
+]
 
-[tool.setuptools.packages.find]
-where = ["src"]
-namespaces = false
+[tool.setuptools.package-dir]
+"" = "src"
+"specadia._contracts" = "src/contracts"
+"specadia._diagnostics" = "src/diagnostics"
+"specadia._agents" = "src/agents"
+"specadia._design" = "src/design"
+"specadia._design.design_agent" = "src/design/design_agent"
+"specadia._design.designer" = "src/design/designer"
+"specadia._design.documenter" = "src/design/documenter"
+"specadia._orchestrator" = "src/orchestrator"
+"specadia._prompt_templates" = "src/prompt_templates"
+"specadia._prompt_templates.kb" = "src/prompt_templates/kb"
+"specadia._prompt_templates.templates" = "src/prompt_templates/templates"
+"specadia._rag" = "src/rag"
+"specadia._requirement" = "src/requirement"
+"specadia._requirement.analyzer" = "src/requirement/analyzer"
+"specadia._requirement.collector" = "src/requirement/collector"
+"specadia._requirement.re_agent" = "src/requirement/re_agent"
+"specadia._requirement.specifier" = "src/requirement/specifier"
+"specadia._single" = "src/single"
+"specadia._tools" = "src/tools"
+"specadia._utils" = "src/utils"

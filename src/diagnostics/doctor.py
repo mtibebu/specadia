@@ -15,8 +15,8 @@ import typer
 from rich.console import Console
 from rich.table import Table
 from specadia import __version__
-from utils import DEFAULT_MODEL_NAME
-from agents.local_providers import local_provider_for, provider_host_port
+from specadia._constants import DEFAULT_MODEL_NAME
+from specadia.providers import local_provider_for, provider_host_port
 
 
 @dataclass(frozen=True)
@@ -184,7 +184,7 @@ def _module_check(module: str, package: str, *, required: bool) -> CheckResult:
   )
 
 
-app = typer.Typer(help="Validate Specadia provider and runtime prerequisites.")
+app = typer.Typer(help="Validate Specadia runtime and optional provider prerequisites.")
 
 
 @app.command()
@@ -198,7 +198,7 @@ def doctor(
         False, "--version", is_eager=True, help="Show the Specadia version and exit."
     ),
 ):
-  """Check the environment before starting an agent run."""
+  """Check the environment before converting design artifacts."""
   if version:
     typer.echo(f"specadia {__version__}")
     return

@@ -3,31 +3,9 @@ services:
     build: .
     image: specadia:latest
     volumes:
-      - ./runs:/app/runs
+      - ./:/workspace:ro
       - ./.specadia:/app/.specadia
-    env_file:
-      - path: .env
-        required: false
-    environment:
-      SPECADIA_RUN_MODE: MAIN
-      OLLAMA_BASE_URL: "http://host.docker.internal:11434"
     stdin_open: true
     tty: true
-    # Usage:
-    #   docker compose run --rm specadia run \
-    #     --query "Design a REST API" -t single_agent -m ollama_chat/qwen3.6:35b
-  ollama:
-    image: ollama/ollama:latest
-    ports:
-      - "11434:11434"
-    volumes:
-      - ollama_models:/root/.ollama
-    profiles:
-      - ollama
-    # Usage:
-    #   docker compose --profile ollama up -d ollama
-    #   docker exec -it <id> ollama pull qwen3.6:35b
-    # Then point specadia at: -m ollama_chat/qwen3.6:35b
-
-volumes:
-  ollama_models:
+    # Usage: docker compose run --rm specadia contract /workspace/requirements.md \
+    #   --design /workspace/design.md --output-dir /app/.specadia/contracts

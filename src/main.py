@@ -8,15 +8,15 @@ from rich import print
 from rich.console import Console
 from specadia import __version__
 
-from contracts.cli import generate_contract
-from contracts.cli import generate_from_intent
-from contracts.cli import list_runs
-from diagnostics.doctor import doctor
-from rag.cli import app as rag_app
-from utils import DEFAULT_MODEL_NAME
-from utils.constants import AgentRunMode
-from utils.logger import get_run_id
-from utils.logger import setup_logging
+from specadia._contracts.cli import generate_contract
+from specadia._contracts.cli import generate_from_intent
+from specadia._contracts.cli import list_runs
+from specadia._diagnostics.doctor import doctor
+from specadia._rag.cli import app as rag_app
+from specadia._utils import DEFAULT_MODEL_NAME
+from specadia._utils.constants import AgentRunMode
+from specadia._utils.logger import get_run_id
+from specadia._utils.logger import setup_logging
 
 app = typer.Typer(help="Specadia CLI for automated software design")
 app.command("contract")(generate_contract)
@@ -86,7 +86,7 @@ def run(
 ):
   """Run the Specadia automation with specified configuration."""
   try:
-    from orchestrator.orchestrator import get_agent_response
+    from specadia._orchestrator.orchestrator import get_agent_response
   except ImportError as error:
     Console().print(
         "[red]Agent dependencies are not installed. "

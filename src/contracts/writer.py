@@ -30,7 +30,10 @@ def write_bundles(bundles: list[ContractBundle], force: bool = False) -> list[Pa
       "contracts": [
           {
               "harness": bundle.harness.value,
-              "path": str(bundle.output_path),
+              # Manifests are routinely shared with generated contracts. Keep paths
+              # relative to the manifest so local usernames and checkout layouts are
+              # never embedded in release artifacts.
+              "path": bundle.output_path.name,
               "sha256": _sha256(bundle.content),
           }
           for bundle in bundles

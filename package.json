@@ -2,8 +2,16 @@
   "name": "specadia-agent-plugins",
   "version": "0.2.0",
   "description": "Thin coding-agent adapters for the Specadia planning engine",
+  "license": "Apache-2.0",
   "type": "module",
   "private": true,
+  "files": [
+    ".opencode/plugins/specadia.ts",
+    ".pi/extensions/specadia.ts",
+    "skills/",
+    "LICENSE",
+    "README.md"
+  ],
   "main": ".opencode/plugins/specadia.ts",
   "pi": {
     "extensions": [

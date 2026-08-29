@@ -1,4 +1,4 @@
-from contracts.traceability import build_traceability
+from specadia.contracts.traceability import build_traceability
 
 
 def test_traceability_flags_missing_design_mapping():

@@ -2,9 +2,9 @@ from pathlib import Path
 
 from typer.testing import CliRunner
 
-from contracts.cli import app
-from contracts.specadia_pipeline import SpecadiaPipeline
-from contracts.workflow import GeneratedDocuments
+from specadia._contracts.cli import app
+from specadia._contracts.specadia_pipeline import SpecadiaPipeline
+from specadia._contracts.workflow import GeneratedDocuments
 
 runner = CliRunner()
 

@@ -3,14 +3,14 @@
 from html import escape
 from typing import List, Optional, Union
 from pathlib import Path
-from utils.constants import OLLAMA_API_BASE, OLLAMA_BASE_URL
-from agents.local_providers import local_openai_model_kwargs, local_provider_for
+from specadia._utils.constants import OLLAMA_API_BASE, OLLAMA_BASE_URL
+from specadia._agents.local_providers import local_openai_model_kwargs, local_provider_for
 
 from google.adk.models.lite_llm import LiteLlm
 from google.genai.types import GenerateContentConfig, ThinkingConfig
 from loguru import logger
 
-from utils.constants import (CONTENT_LENGTH_LARGE, LITE_LLM_TIMEOUT)
+from specadia._utils.constants import (CONTENT_LENGTH_LARGE, LITE_LLM_TIMEOUT)
 
 
 def is_gemini_model(llm_model_name: str) -> bool:
@@ -28,7 +28,7 @@ def get_planner_for(llm_model_name: str):
     return None
   from google.adk.planners import BuiltInPlanner
   from google.genai.types import ThinkingConfig
-  from utils.constants import THINKING_BUDGET
+  from specadia._utils.constants import THINKING_BUDGET
 
   thinking_config = ThinkingConfig(include_thoughts=True, thinking_budget=THINKING_BUDGET)
   return BuiltInPlanner(thinking_config=thinking_config)
@@ -95,7 +95,7 @@ def add_rag_tool(
     return
 
   from google.adk.tools import FunctionTool
-  from rag.knowledge_base import make_collection_retriever
+  from specadia._rag.knowledge_base import make_collection_retriever
 
   retriever = make_collection_retriever(rag_source, rag_index_dir)
 

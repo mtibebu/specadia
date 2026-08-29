@@ -1,8 +1,4 @@
-"""Generate coding-agent contracts from Specadia specifications.
-
-This top-level namespace is retained for backward compatibility. New
-integrations should import :mod:`specadia.contracts`.
-"""
+"""Internal implementation for READ-MAS artifact contract generation."""
 
 from .generator import ContractGenerator
 from .models import ContractBundle

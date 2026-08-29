@@ -1,6 +1,6 @@
 from types import SimpleNamespace
 
-from agents import agent_callbacks
+from specadia._agents import agent_callbacks
 
 
 class _State:

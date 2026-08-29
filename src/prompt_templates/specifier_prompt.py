@@ -1,6 +1,6 @@
 """Prompt template for the requirements specifier agent."""
 
-from prompt_templates.templates.srs_template import IEEE_830_SRS_TEMPLATE
+from specadia._prompt_templates.templates.srs_template import IEEE_830_SRS_TEMPLATE
 
 SPECIFIER_AGENT_SYSTEM_PROMPT = f"""You are an expert software requirements documenter.
 Create a Software Requirement Specification (SRS) from the collector and analyzer outputs provided as input.

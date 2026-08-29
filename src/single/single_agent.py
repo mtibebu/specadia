@@ -6,12 +6,12 @@ import time
 
 from google.adk.agents import Agent
 
-from agents import (AgentBase, get_model_from, add_rag_tool, get_agent_config)
-from agents import (before_agent, after_agent, before_model, after_model, after_rag_tool)
-from utils.constants import DEFAULT_MODEL_NAME
-from prompt_templates.single_prompt import SINGLE_AGENT_SYSTEM_PROMPT
-from utils.constants import AgentRunMode
-from utils.logger import (get_run_id, setup_logging)
+from specadia._agents import (AgentBase, get_model_from, add_rag_tool, get_agent_config)
+from specadia._agents import (before_agent, after_agent, before_model, after_model, after_rag_tool)
+from specadia._utils.constants import DEFAULT_MODEL_NAME
+from specadia._prompt_templates.single_prompt import SINGLE_AGENT_SYSTEM_PROMPT
+from specadia._utils.constants import AgentRunMode
+from specadia._utils.logger import (get_run_id, setup_logging)
 
 
 class SingleAgent(AgentBase):

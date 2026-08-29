@@ -6,7 +6,7 @@ from pathlib import Path
 
 from google.adk.agents import Agent
 
-from utils.constants import AgentRunMode
+from specadia._utils.constants import AgentRunMode
 from .agent_util import format_rag_few_shot
 
 

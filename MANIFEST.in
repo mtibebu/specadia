@@ -1,0 +1,25 @@
+include LICENSE
+include README.md
+include CONTRIBUTING.md
+include SECURITY.md
+include CODE_OF_CONDUCT.md
+recursive-include src *.py
+prune .agents
+prune .claude-plugin
+prune .cline
+prune .devin-plugin
+prune .grok-plugin
+prune .kimi-plugin
+prune .opencode
+prune .pi
+prune plugins
+prune scripts
+prune skills
+prune runs
+prune tests
+exclude package.json
+exclude plugin.json
+exclude src/__init__.py
+exclude src/main.py
+global-exclude .DS_Store
+global-exclude *.py[cod]

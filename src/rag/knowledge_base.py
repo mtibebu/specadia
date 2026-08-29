@@ -11,6 +11,7 @@ import math
 from pathlib import Path
 import re
 import sqlite3
+import time
 from typing import Any
 
 SUPPORTED_SUFFIXES = frozenset({".md", ".txt", ".pdf", ".json"})
@@ -21,6 +22,7 @@ DEFAULT_CHUNK_OVERLAP = 150
 DEFAULT_MAX_FILE_BYTES = 25 * 1024 * 1024
 DEFAULT_MAX_ROWS = 10_000
 DEFAULT_MAX_CELL_CHARS = 20_000
+DEFAULT_SQL_TIMEOUT_SECONDS = 5.0
 HASH_DIMENSION = 768
 _COLLECTION_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
 _TOKEN_RE = re.compile(r"[\w][\w.-]*", re.UNICODE)
@@ -180,7 +182,12 @@ def _file_sha256(path: Path) -> str:
 
 
 def _document_chunks(
-    path: Path, *, chunk_size: int, chunk_overlap: int, max_file_bytes: int
+    path: Path,
+    source_key: str,
+    *,
+    chunk_size: int,
+    chunk_overlap: int,
+    max_file_bytes: int,
 ) -> list[dict[str, Any]]:
   text = read_document(path, max_file_bytes=max_file_bytes)
   fingerprint = _source_fingerprint(path)
@@ -188,7 +195,7 @@ def _document_chunks(
       {
           "chunk": value,
           "source_type": "file",
-          "source": str(path),
+          "source": source_key,
           "source_id": fingerprint,
           "chunk_index": index,
       }
@@ -272,6 +279,12 @@ def build_file_collection(
   files = discover_files(sources)
   if not files:
     raise KnowledgeBaseError("No supported documents were found.")
+  source_keys = [f"file:{path.name}" for path in files]
+  if len(set(source_keys)) != len(source_keys):
+    raise KnowledgeBaseError(
+        "Source filenames must be unique within a collection so private directory paths "
+        "do not need to be stored."
+    )
   destination = collection_dir(collection, index_dir)
   existing_chunks: list[dict[str, Any]] = []
   existing_sources: dict[str, dict[str, Any]] = {}
@@ -281,14 +294,25 @@ def build_file_collection(
         "sources", {}
     )
 
-  input_paths = {str(path) for path in files}
+  # Drop manifests created by older versions that stored absolute paths. They will be
+  # replaced by privacy-safe identifiers during this build.
+  existing_chunks = [
+      item
+      for item in existing_chunks
+      if str(item.get("source", "")).startswith(("file:", "sqlite:"))
+  ]
+  existing_sources = {
+      key: value
+      for key, value in existing_sources.items()
+      if key.startswith(("file:", "sqlite:"))
+  }
+  input_paths = set(source_keys)
   kept_chunks = [item for item in existing_chunks if item.get("source") not in input_paths]
   source_manifest = {
       key: value for key, value in existing_sources.items() if key not in input_paths
   }
   added = unchanged = 0
-  for path in files:
-    source_key = str(path)
+  for path, source_key in zip(files, source_keys):
     fingerprint = _source_fingerprint(path)
     if existing_sources.get(source_key, {}).get("sha256") == fingerprint:
       kept_chunks.extend(item for item in existing_chunks if item.get("source") == source_key)
@@ -297,6 +321,7 @@ def build_file_collection(
       continue
     new_chunks = _document_chunks(
         path,
+        source_key,
         chunk_size=chunk_size,
         chunk_overlap=chunk_overlap,
         max_file_bytes=max_file_bytes,
@@ -350,6 +375,7 @@ def ingest_sqlite(
     rebuild: bool = False,
     max_rows: int = DEFAULT_MAX_ROWS,
     max_cell_chars: int = DEFAULT_MAX_CELL_CHARS,
+    sql_timeout_seconds: float = DEFAULT_SQL_TIMEOUT_SECONDS,
     chunk_size: int = DEFAULT_CHUNK_SIZE,
     chunk_overlap: int = DEFAULT_CHUNK_OVERLAP,
 ) -> BuildResult:
@@ -359,6 +385,11 @@ def ingest_sqlite(
     raise KnowledgeBaseError(f"SQLite database does not exist: {database}")
   if max_rows < 1 or max_rows > DEFAULT_MAX_ROWS:
     raise KnowledgeBaseError(f"max_rows must be between 1 and {DEFAULT_MAX_ROWS:,}.")
+  if sql_timeout_seconds <= 0 or sql_timeout_seconds > DEFAULT_SQL_TIMEOUT_SECONDS:
+    raise KnowledgeBaseError(
+        f"sql_timeout_seconds must be greater than 0 and no more than "
+        f"{DEFAULT_SQL_TIMEOUT_SECONDS:g}."
+    )
   if bool(query) == bool(table):
     raise KnowledgeBaseError("Provide exactly one of query or table.")
   if table:
@@ -369,11 +400,19 @@ def ingest_sqlite(
     query = f'SELECT * FROM "{table}"'
   safe_query = validate_read_only_sql(query or "")
   connection = sqlite3.connect(_sqlite_uri(database), uri=True)
+  deadline = time.monotonic() + sql_timeout_seconds
+  connection.set_progress_handler(lambda: int(time.monotonic() >= deadline), 1_000)
   try:
     connection.execute("PRAGMA query_only = ON")
     cursor = connection.execute(safe_query)
     columns = [column[0] for column in cursor.description or []]
     rows = cursor.fetchmany(max_rows + 1)
+  except sqlite3.OperationalError as error:
+    if "interrupted" in str(error).lower():
+      raise KnowledgeBaseError(
+          f"SQLite query exceeded the {sql_timeout_seconds:g}-second execution budget."
+      ) from error
+    raise KnowledgeBaseError(f"SQLite read failed: {error}") from error
   except sqlite3.Error as error:
     raise KnowledgeBaseError(f"SQLite read failed: {error}") from error
   finally:

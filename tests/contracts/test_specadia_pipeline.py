@@ -3,10 +3,10 @@ import json
 
 import pytest
 
-from contracts.specadia_pipeline import SpecadiaPipeline
-from requirement.analyzer import AnalyzerOutputModel
-from requirement.collector import CollectorOutputModel
-from requirement.specifier.specifier_models import SpecifierInputModel
+from specadia._contracts.specadia_pipeline import SpecadiaPipeline
+from specadia._requirement.analyzer import AnalyzerOutputModel
+from specadia._requirement.collector import CollectorOutputModel
+from specadia._requirement.specifier.specifier_models import SpecifierInputModel
 
 
 def test_collect_frames_intent_and_feedback_as_untrusted(monkeypatch):
@@ -22,8 +22,8 @@ def test_collect_frames_intent_and_feedback_as_untrusted(monkeypatch):
     state_collector["collector_output"] = {"FRs": ["FR-1: Report"], "NFRs": []}
     return "{}"
 
-  monkeypatch.setattr("orchestrator.orchestrator.run_agent", fake_run_agent)
-  monkeypatch.setattr("requirement.CollectorAgent", lambda *args, **kwargs: FakeCollector())
+  monkeypatch.setattr("specadia._orchestrator.orchestrator.run_agent", fake_run_agent)
+  monkeypatch.setattr("specadia._requirement.CollectorAgent", lambda *args, **kwargs: FakeCollector())
   pipeline = SpecadiaPipeline("test-model", stage_timeout=None)
   asyncio.run(
       pipeline.collect(
@@ -79,23 +79,23 @@ def test_generate_documents_passes_structured_payloads_to_schema_bound_agents(mo
     return "{}"
 
   monkeypatch.setattr(
-      "orchestrator.orchestrator.run_agent",
+      "specadia._orchestrator.orchestrator.run_agent",
       fake_run_agent,
   )
   monkeypatch.setattr(
-      "requirement.AnalyzerAgent",
+      "specadia._requirement.AnalyzerAgent",
       lambda *args, **kwargs: FakeAgentFactory("analyzer"),
   )
   monkeypatch.setattr(
-      "requirement.SpecifierAgent",
+      "specadia._requirement.SpecifierAgent",
       lambda *args, **kwargs: FakeAgentFactory("specifier"),
   )
   monkeypatch.setattr(
-      "design.DesignerAgent",
+      "specadia._design.DesignerAgent",
       lambda *args, **kwargs: FakeAgentFactory("designer"),
   )
   monkeypatch.setattr(
-      "design.DocumenterAgent",
+      "specadia._design.DocumenterAgent",
       lambda *args, **kwargs: FakeAgentFactory("documenter"),
   )
 
@@ -140,18 +140,18 @@ def test_generate_documents_frames_text_handoffs_as_untrusted(monkeypatch):
       state_collector["documenter_output"] = "# Architecture\nFR-1"
     return "{}"
 
-  monkeypatch.setattr("orchestrator.orchestrator.run_agent", fake_run_agent)
+  monkeypatch.setattr("specadia._orchestrator.orchestrator.run_agent", fake_run_agent)
   monkeypatch.setattr(
-      "requirement.AnalyzerAgent", lambda *args, **kwargs: FakeAgentFactory("analyzer")
+      "specadia._requirement.AnalyzerAgent", lambda *args, **kwargs: FakeAgentFactory("analyzer")
   )
   monkeypatch.setattr(
-      "requirement.SpecifierAgent", lambda *args, **kwargs: FakeAgentFactory("specifier")
+      "specadia._requirement.SpecifierAgent", lambda *args, **kwargs: FakeAgentFactory("specifier")
   )
   monkeypatch.setattr(
-      "design.DesignerAgent", lambda *args, **kwargs: FakeAgentFactory("designer")
+      "specadia._design.DesignerAgent", lambda *args, **kwargs: FakeAgentFactory("designer")
   )
   monkeypatch.setattr(
-      "design.DocumenterAgent", lambda *args, **kwargs: FakeAgentFactory("documenter")
+      "specadia._design.DocumenterAgent", lambda *args, **kwargs: FakeAgentFactory("documenter")
   )
 
   asyncio.run(

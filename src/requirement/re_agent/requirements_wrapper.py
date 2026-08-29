@@ -2,14 +2,14 @@
 
 from typing import Optional
 from pathlib import Path
-from agents import AgentBase
-from utils.constants import AgentRunMode, DEFAULT_MODEL_NAME
+from specadia._agents import AgentBase
+from specadia._utils.constants import AgentRunMode, DEFAULT_MODEL_NAME
 
 from google.adk.agents import SequentialAgent
-from utils.logger import (get_run_id, setup_logging)
-from requirement import CollectorAgent
-from requirement import AnalyzerAgent
-from requirement import SpecifierAgent
+from specadia._utils.logger import (get_run_id, setup_logging)
+from specadia._requirement import CollectorAgent
+from specadia._requirement import AnalyzerAgent
+from specadia._requirement import SpecifierAgent
 
 
 class RequirementsWrapperAgent(AgentBase):

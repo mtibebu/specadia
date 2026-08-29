@@ -1,4 +1,4 @@
-"""CLI for generating coding-agent contracts."""
+"""CLI implementation for converting READ-MAS artifacts into contracts."""
 
 import asyncio
 import json
@@ -8,7 +8,7 @@ from typing import Optional
 import typer
 from rich import print
 from specadia import __version__
-from utils import DEFAULT_MODEL_NAME
+from specadia._constants import DEFAULT_MODEL_NAME
 
 from .generator import ContractGenerator
 from .context import inspect_repository
@@ -21,7 +21,7 @@ from .workflow import WorkflowCancelled
 from .validation import QualityReport
 from .writer import write_bundles
 
-app = typer.Typer(help="Generate coding-agent contracts from Specadia specifications.")
+app = typer.Typer(help="Generate coding-agent contracts from READ-MAS requirements and designs.")
 
 DEFAULT_SESSIONS_DIR = Path(".specadia/sessions")
 
@@ -46,7 +46,7 @@ def contract_cli(
         help="Show the Specadia version and exit.",
     ),
 ):
-  """Generate coding-agent contracts from Specadia specifications."""
+  """Generate coding-agent contracts from READ-MAS requirements and designs."""
 
 
 @app.command("generate")
@@ -230,7 +230,7 @@ def generate_from_intent(
 ):
   """Generate SRS/design with HITL, then emit coding-agent contracts."""
   from .specadia_pipeline import SpecadiaPipeline
-  from agents.local_providers import is_local_model
+  from specadia._agents.local_providers import is_local_model
 
   effective_intent = intent
   if repo:
@@ -298,7 +298,7 @@ def generate_from_intent(
                 "fallback_models": fallback_model,
                 "rag": rag,
                 "rag_collection": rag_collection,
-                "repository": str(repo) if repo else None,
+                "repository_context": bool(repo),
                 "stage_timeout": stage_timeout,
             },
         )

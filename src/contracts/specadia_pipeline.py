@@ -5,9 +5,9 @@ import json
 from pathlib import Path
 from typing import Any
 
-from agents.prompt_safety import require_bounded_strings
-from agents.prompt_safety import untrusted_json
-from agents.prompt_safety import untrusted_text
+from specadia._agents.prompt_safety import require_bounded_strings
+from specadia._agents.prompt_safety import untrusted_json
+from specadia._agents.prompt_safety import untrusted_text
 
 from .workflow import CollectorDraft
 from .workflow import GeneratedDocuments
@@ -39,9 +39,9 @@ class SpecadiaPipeline:
       feedback: str | None = None,
   ) -> CollectorDraft:
     """Run only Collector, optionally refining its previous draft."""
-    from orchestrator.orchestrator import run_agent
-    from requirement import CollectorAgent
-    from utils.constants import AgentRunMode
+    from specadia._orchestrator.orchestrator import run_agent
+    from specadia._requirement import CollectorAgent
+    from specadia._utils.constants import AgentRunMode
 
     query = (
         "Extract requirements from the following user-provided intent.\n\n"
@@ -92,12 +92,12 @@ class SpecadiaPipeline:
       approved_draft: CollectorDraft,
   ) -> GeneratedDocuments:
     """Run Analyzer onward with the human-approved Collector state."""
-    from design import DesignerAgent
-    from design import DocumenterAgent
-    from orchestrator.orchestrator import run_agent
-    from requirement import AnalyzerAgent
-    from requirement import SpecifierAgent
-    from utils.constants import AgentRunMode
+    from specadia._design import DesignerAgent
+    from specadia._design import DocumenterAgent
+    from specadia._orchestrator.orchestrator import run_agent
+    from specadia._requirement import AnalyzerAgent
+    from specadia._requirement import SpecifierAgent
+    from specadia._utils.constants import AgentRunMode
 
     require_bounded_strings(approved_draft, label="approved Collector output")
 

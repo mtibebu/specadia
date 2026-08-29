@@ -4,10 +4,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Specadia generates software requirements specifications (SRS) and system designs from natural
-language queries using multi-agent AI orchestration built on Google ADK. It can also turn an
-existing (or freshly generated) SRS/design pair into a deterministic implementation contract
-(`AGENTS.md`, `CLAUDE.md`, or a generic harness file) for a coding agent to execute against.
+Specadia converts approved READ-MAS software requirements specifications (SRS) and optional
+system designs into deterministic implementation contracts (`AGENTS.md`, `CLAUDE.md`, or a
+generic harness file) for coding agents. The public core is deliberately offline and does not
+generate requirements or designs from a raw intent.
 
 The repository doubles as a distributable multi-harness plugin: the same root `skills/` and
 manifest files let Claude Code, Codex, Cursor, Kimi, Cline, Grok, Devin, Copilot, Factory Droid,
@@ -18,32 +18,18 @@ duplicated here.
 ## Commands
 
 ```bash
-# Install (editable); use extras to pull in only what you need
+# Install (editable); use the full extra only when maintaining legacy internals
 python -m pip install -e .                              # core: contract generation, doctor
-python -m pip install -e ".[agents]"                     # + multi-agent SRS/design generation
-python -m pip install -e ".[agents,rag]"                 # + local knowledge-base retrieval
-python -m pip install -e ".[agents,rag,dev,test]"        # full dev install
-
-# Run the CLI
-specadia run --query "Design a task management app" -t single_agent -m ollama_chat/qwen3.6:35b
-specadia run --query "Design a chat app" -t read_agent -m ollama_chat/qwen3.6:35b
+python -m pip install -e ".[test]"                     # core development and tests
+python -m pip install -e ".[full,test,dev]"            # all private/legacy implementation deps
 
 # SRS/design -> implementation contract (existing docs)
-specadia contract runs/example/logs/srs.md --design runs/example/logs/design.md --harness codex
+specadia contract requirements.md --design design.md --harness codex
+specadia-contract generate requirements.md --design design.md --harness claude
 
-# Intent -> HITL pipeline -> contract, with checkpointing/resume
-specadia-contract from-intent "Build an auditable inventory transfer service" \
-  --harness codex --harness claude --run-id inventory-v1
-specadia-contract from-intent "..." --run-id inventory-v1 --resume --force
-specadia-contract runs
-
-# Verify environment / model reachability before a run
-specadia doctor --model openai/gpt-5
-specadia-doctor --model ollama/qwen3 --no-network --json
-
-# RAG knowledge base
-specadia rag build ./product-docs ./policies.json --collection payments
-specadia rag query "How are refunds approved?" --collection payments
+# Verify the local core environment
+specadia doctor --no-network --json
+specadia-doctor --no-network --json
 
 # Format code (pyink, 2-space indent, 100-char line length)
 pyink src/
@@ -58,28 +44,27 @@ python -m compileall -q src               # release verification
 
 ## Architecture
 
-### Two entry points, one CLI layer underneath
+### Three public entry points
 
 `pyproject.toml` declares three console scripts, but they aren't independent programs:
 
-- `specadia` → `specadia.cli:app`, which just re-exports `main.app` (`src/main.py`). This is the
-  full CLI: `run`, `contract`, `contract-from-intent`, `contract-runs`, `doctor`, `rag`.
-- `specadia-contract` → `specadia.contracts.cli:app`, a re-export of `contracts/cli.py`'s Typer
-  app (`generate`, `from-intent`, `runs` subcommands, no `contract-` prefix needed).
-- `specadia-doctor` → `specadia.diagnostics.doctor:app`, a re-export of `diagnostics/doctor.py`.
+- `specadia` → `specadia.cli:app`, with `contract` and `doctor` commands.
+- `specadia-contract` → `specadia.contracts.cli:app`, with the deterministic `generate` command.
+- `specadia-doctor` → `specadia.diagnostics.doctor:app`.
 
-**Where to make changes**: the `src/specadia/` package contains only these thin re-export shims
-(needed because `console_scripts` require a dotted import path under a real package). The actual
-implementation lives in top-level packages directly under `src/` — `agents/`, `contracts/`,
-`design/`, `diagnostics/`, `orchestrator/`, `rag/`, `requirement/`, `single/`, `tools/`, `utils/`
-— which are importable as top-level modules because `pyproject.toml` sets
-`[tool.setuptools.packages.find] where = ["src"]`. Don't edit `src/specadia/*`; edit the package
-it re-exports from.
+**Where to make changes**: `src/specadia/` defines the public package and CLI adapters. The
+implementation source directories under `src/` are packaged only as private `specadia._*`
+namespaces through explicit `pyproject.toml` mappings; they must never be imported as top-level
+packages by shipped code. Public imports belong under `specadia`, `specadia.contracts`, or
+`specadia.diagnostics`.
 
-### Two operational modes for SRS/design generation
+### Private legacy agent implementation
 
-**Single Agent** (`-t single_agent`): One `SingleAgent` (`src/single/single_agent.py`) handles
-both requirements and design in a single pass.
+The optional `full` extra supports maintenance and testing of the existing agent and RAG
+implementation under private `specadia._*` namespaces. It is not part of the public CLI contract.
+
+**Single Agent**: One `SingleAgent` (`src/single/single_agent.py`) handles both requirements and
+design in a single pass.
 
 **Multi-Agent** (`-t read_agent`): A `SequentialAgent` pipeline, run in one process via Google
 ADK (no separate agent servers):
@@ -100,8 +85,7 @@ ReadWrapperAgent
   wrapped via LiteLLM. `local_providers.py` is the single source of truth for local-server prefix
   → base-URL/API-key resolution (`ollama_chat/`, `lm_studio/`, `localai/`, `vllm/`, `llama_cpp/`,
   `openai_compatible/`); it's shared by agent model init, `specadia doctor`, and the
-  `contract-from-intent --repo` hosted-model confirmation prompt, so provider support only needs
-  to be added in one place.
+  private agent paths, so provider support only needs to be added in one place.
 - **Response normalization**: an ADK `after_model` callback (`src/agents/agent_callbacks.py`)
   strips markdown JSON fences and normalizes table/tree-line whitespace on every LLM response
   before it reaches downstream agents or files — expect saved output to differ slightly from the
@@ -116,8 +100,8 @@ ReadWrapperAgent
 - **RAG** (`src/rag/knowledge_base.py`): user-owned Markdown, text, PDF, DOCX, JSON, or bounded
   read-only SQLite content is indexed locally (deterministic hashing embeddings, no external
   embedding calls) into named FAISS collections under `.specadia/rag/`, and registered as an agent
-  tool (`get_requirement_examples`) when `--rag` is enabled. See README.md for the full CLI/flag
-  and ingestion-safety details (symlink rejection, size bounds, SQL statement restrictions).
+  tool (`get_requirement_examples`) when private RAG support is enabled. Its ingestion boundary
+  rejects symlinks, oversized inputs, and non-read-only SQL statements.
 - **Structured output**: Collector, Analyzer, and Designer agents produce Pydantic models
   (`*_models.py` files); downstream agents consume these.
 - **Run modes** (`AgentRunMode` in `src/utils/constants.py`): `MAIN` (normal), `EVAL`
@@ -126,20 +110,17 @@ ReadWrapperAgent
 
 ### Contract generation pipeline (`src/contracts/`)
 
-Turns an approved SRS/design pair into per-harness implementation contracts, either from existing
-documents (`specadia contract` / `contracts/cli.py:generate_contract`) or from a raw intent that
-first runs the multi-agent pipeline (`specadia-contract from-intent` /
-`contracts/workflow.py:ContractWorkflow`).
+Turns an approved READ-MAS SRS/design pair into per-harness implementation contracts from existing
+documents (`specadia contract` or `specadia-contract generate`). Contract generation is
+deterministic and does not invoke an LLM.
 
-- **`ContractWorkflow.run`** drives a human-in-the-loop loop: Collector draft → human
+- The private **`ContractWorkflow.run`** legacy adapter drives a human-in-the-loop loop: Collector draft → human
   approve/refine/cancel (`ApprovalGate`) → SRS/design generation → automated quality gate
   (`validation.py`) that can loop back into another Collector refinement → contract generation →
   traceability. Each stage accepts an ordered list of fallback callables (`--fallback-model`) and
   a per-stage timeout (`--stage-timeout`).
-- **Checkpointing** (`session_store.py`, `SessionStore`/`RunCheckpoint`): every stage transition
-  is saved atomically under `.specadia/sessions/`. `--resume --run-id <id>` continues an
-  interrupted run without rerunning already-approved stages; `specadia-contract runs` lists saved
-  checkpoints.
+- **Checkpointing** (`session_store.py`, `SessionStore`/`RunCheckpoint`) belongs to that private
+  legacy adapter and is not exposed by the public console scripts.
 - **Validation** (`validation.py`) rejects empty documents, unresolved placeholders, and
   missing/duplicate requirement IDs before contracts are written.
 - **Traceability** (`traceability.py`) maps requirement IDs across the Collector draft, SRS,

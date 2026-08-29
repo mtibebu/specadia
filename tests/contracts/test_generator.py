@@ -3,10 +3,10 @@ from pathlib import Path
 import pytest
 from typer.testing import CliRunner
 
-from contracts.cli import app
-from contracts.generator import ContractGenerator
-from contracts.models import Harness
-from contracts.writer import write_bundles
+from specadia.contracts.cli import app
+from specadia.contracts.generator import ContractGenerator
+from specadia.contracts.models import Harness
+from specadia.contracts.writer import write_bundles
 
 
 SRS = """# Inventory Service
@@ -66,6 +66,8 @@ def test_generates_traceable_codex_contract(tmp_path: Path):
   assert "transactional service" in bundle.content
   assert len(bundle.sources) == 2
   assert all(len(source.sha256) == 64 for source in bundle.sources)
+  assert {source.path for source in bundle.sources} == {"srs.md", "design.md"}
+  assert str(tmp_path) not in bundle.content
 
 
 @pytest.mark.parametrize(
@@ -91,7 +93,11 @@ def test_writer_refuses_overwrite_and_emits_manifest(tmp_path: Path):
   written = write_bundles([bundle])
 
   assert bundle.output_path in written
-  assert (tmp_path / "out" / "contract-manifest.json").is_file()
+  manifest_path = tmp_path / "out" / "contract-manifest.json"
+  assert manifest_path.is_file()
+  manifest = manifest_path.read_text(encoding="utf-8")
+  assert '"path": "AGENTS.md"' in manifest
+  assert str(tmp_path) not in manifest
   with pytest.raises(FileExistsError):
     write_bundles([bundle])
 

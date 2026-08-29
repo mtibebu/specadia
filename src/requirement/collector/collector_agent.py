@@ -2,16 +2,16 @@
 
 from typing import Optional
 from pathlib import Path
-from agents import (AgentBase, get_model_from, get_planner_for)
-from utils.constants import (AgentRunMode, DEFAULT_MODEL_NAME, CONTENT_LENGTH_SMALL)
+from specadia._agents import (AgentBase, get_model_from, get_planner_for)
+from specadia._utils.constants import (AgentRunMode, DEFAULT_MODEL_NAME, CONTENT_LENGTH_SMALL)
 import time
 
 from google.adk.agents import Agent
 
-from utils.logger import (get_run_id, setup_logging)
-from prompt_templates import COLLECTOR_AGENT_SYSTEM_PROMPT
+from specadia._utils.logger import (get_run_id, setup_logging)
+from specadia._prompt_templates import COLLECTOR_AGENT_SYSTEM_PROMPT
 from .collector_models import CollectorOutputModel
-from agents import (
+from specadia._agents import (
     add_rag_tool,
     before_agent,
     after_agent,
