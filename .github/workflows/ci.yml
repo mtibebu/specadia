@@ -92,6 +92,7 @@ jobs:
         run: |
           wheel=$(find dist -name '*.whl' -print -quit)
           python -m venv /tmp/specadia-full
+          /tmp/specadia-full/bin/python -m pip install --upgrade pip
           /tmp/specadia-full/bin/python -m pip install "${wheel}[full]" pip-audit
           /tmp/specadia-full/bin/python -c "import aiohttp, numpy, specadia._agents, specadia._rag"
           /tmp/specadia-full/bin/python -m pip check
