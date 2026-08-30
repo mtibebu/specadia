@@ -36,6 +36,10 @@ def local_provider_for(model: str) -> LocalProvider | None:
   return next((provider for provider in LOCAL_PROVIDERS if prefix in provider.prefixes), None)
 
 
+def is_local_model(model: str) -> bool:
+  return model.lower().startswith("ollama") or local_provider_for(model) is not None
+
+
 def provider_host_port(
     provider: LocalProvider,
     environ: dict[str, str] | None = None,

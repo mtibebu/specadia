@@ -25,6 +25,8 @@ app = typer.Typer(help="Generate coding-agent contracts from READ-MAS requiremen
 
 DEFAULT_SESSIONS_DIR = Path(".specadia/sessions")
 
+__all__ = ["app", "generate_contract", "generate_from_intent", "list_runs"]
+
 
 def _session_store(root: Path) -> SessionStore:
   return SessionStore(root)
@@ -155,6 +157,14 @@ def _progress(stage: str, status: str) -> None:
   print(f"[cyan]{stage}[/cyan]: {status}")
 
 
+def _missing_agent_extras_hint() -> None:
+  typer.secho(
+      "Natural-language intent-to-contract requires the agent extras. "
+      'Install with: pip install "specadia[full]"',
+      fg=typer.colors.RED,
+  )
+
+
 @app.command("from-intent")
 def generate_from_intent(
     intent: str = typer.Argument(..., help="Initial product or system intent."),
@@ -230,7 +240,7 @@ def generate_from_intent(
 ):
   """Generate SRS/design with HITL, then emit coding-agent contracts."""
   from .specadia_pipeline import SpecadiaPipeline
-  from specadia._agents.local_providers import is_local_model
+  from specadia.providers import is_local_model
 
   effective_intent = intent
   if repo:
@@ -246,69 +256,79 @@ def generate_from_intent(
       raise typer.Exit(2)
     effective_intent = f"{intent}\n\n{context.to_prompt()}"
 
-  pipeline = SpecadiaPipeline(
-      llm_model_name=llm_model_name,
-      rag=rag,
-      rag_collection=rag_collection,
-      rag_index_dir=rag_index_dir,
-      stage_timeout=stage_timeout,
-  )
-  if resume and not run_id:
-    print("[red]Error: --resume requires --run-id.[/red]")
-    raise typer.Exit(1)
-  store = _session_store(sessions_dir)
-  if output_dir is None:
-    output_dir = (
-        Path(store.load(run_id).output_dir) if resume and run_id else Path(".specadia/contracts")
-    )
-  fallback_pipelines = [
-      SpecadiaPipeline(
-          model,
-          rag=rag,
-          rag_collection=rag_collection,
-          rag_index_dir=rag_index_dir,
-          stage_timeout=stage_timeout,
-      )
-      for model in fallback_model
-  ]
-  workflow = ContractWorkflow(
-      collect_draft=pipeline.collect,
-      generate_documents=pipeline.generate_documents,
-      approval_gate=ConsoleApprovalGate(),
-      session_store=store,
-      progress=_progress,
-      collector_fallbacks=[fallback.collect for fallback in fallback_pipelines],
-      document_fallbacks=[fallback.generate_documents for fallback in fallback_pipelines],
-      quality_gate=ConsoleQualityGate(),
-  )
   try:
-    result = asyncio.run(
-        workflow.run(
-            effective_intent,
-            harness,
-            output_dir,
-            project_name=project_name,
-            max_refinements=max_refinements,
-            force=force,
-            run_id=run_id,
-            resume=resume,
-            stage_timeout=stage_timeout,
-            metadata={
-                "model": llm_model_name,
-                "fallback_models": fallback_model,
-                "rag": rag,
-                "rag_collection": rag_collection,
-                "repository_context": bool(repo),
-                "stage_timeout": stage_timeout,
-            },
-        )
+    pipeline = SpecadiaPipeline(
+        llm_model_name=llm_model_name,
+        rag=rag,
+        rag_collection=rag_collection,
+        rag_index_dir=rag_index_dir,
+        stage_timeout=stage_timeout,
     )
-  except WorkflowCancelled as error:
-    print(f"[yellow]{error}[/yellow]")
-    raise typer.Exit(2) from error
-  except (ValueError, FileExistsError, OSError) as error:
-    print(f"[red]Error: {error}[/red]")
-    raise typer.Exit(1) from error
+    if resume and not run_id:
+      print("[red]Error: --resume requires --run-id.[/red]")
+      raise typer.Exit(1)
+    store = _session_store(sessions_dir)
+    if output_dir is None:
+      output_dir = (
+          Path(store.load(run_id).output_dir) if resume and run_id else Path(".specadia/contracts")
+      )
+    fallback_pipelines = [
+        SpecadiaPipeline(
+            model,
+            rag=rag,
+            rag_collection=rag_collection,
+            rag_index_dir=rag_index_dir,
+            stage_timeout=stage_timeout,
+        )
+        for model in fallback_model
+    ]
+    workflow = ContractWorkflow(
+        collect_draft=pipeline.collect,
+        generate_documents=pipeline.generate_documents,
+        approval_gate=ConsoleApprovalGate(),
+        session_store=store,
+        progress=_progress,
+        collector_fallbacks=[fallback.collect for fallback in fallback_pipelines],
+        document_fallbacks=[fallback.generate_documents for fallback in fallback_pipelines],
+        quality_gate=ConsoleQualityGate(),
+    )
+    try:
+      result = asyncio.run(
+          workflow.run(
+              effective_intent,
+              harness,
+              output_dir,
+              project_name=project_name,
+              max_refinements=max_refinements,
+              force=force,
+              run_id=run_id,
+              resume=resume,
+              stage_timeout=stage_timeout,
+              metadata={
+                  "model": llm_model_name,
+                  "fallback_models": fallback_model,
+                  "rag": rag,
+                  "rag_collection": rag_collection,
+                  "repository_context": bool(repo),
+                  "stage_timeout": stage_timeout,
+              },
+          )
+      )
+    except WorkflowCancelled as error:
+      print(f"[yellow]{error}[/yellow]")
+      raise typer.Exit(2) from error
+    except (ValueError, FileExistsError, OSError) as error:
+      print(f"[red]Error: {error}[/red]")
+      raise typer.Exit(1) from error
+  except ImportError:
+    _missing_agent_extras_hint()
+    raise typer.Exit(1)
+  except RuntimeError as error:
+    cause = error.__cause__ or error.__context__
+    if isinstance(cause, ImportError):
+      _missing_agent_extras_hint()
+      raise typer.Exit(1)
+    raise
 
   print(f"[green]Approved after {result.refinement_count} refinement(s).[/green]")
   for path in result.written_paths:
