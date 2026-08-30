@@ -5,9 +5,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from specadia._agents.prompt_safety import require_bounded_strings
-from specadia._agents.prompt_safety import untrusted_json
-from specadia._agents.prompt_safety import untrusted_text
+from .prompt_safety import require_bounded_strings, untrusted_json, untrusted_text
 
 from .workflow import CollectorDraft
 from .workflow import GeneratedDocuments

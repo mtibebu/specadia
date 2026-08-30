@@ -4,6 +4,8 @@ import os
 from dataclasses import dataclass
 from urllib.parse import urlparse
 
+from specadia.providers import is_local_model
+
 
 @dataclass(frozen=True)
 class LocalProvider:
@@ -50,10 +52,6 @@ def local_provider_for(model: str) -> LocalProvider | None:
       (provider for provider in LOCAL_PROVIDERS if prefix in provider.prefixes),
       None,
   )
-
-
-def is_local_model(model: str) -> bool:
-  return model.lower().startswith("ollama") or local_provider_for(model) is not None
 
 
 def local_openai_model_kwargs(

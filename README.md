@@ -46,6 +46,35 @@ The core wheel intentionally has no Google ADK dependency. It installs only dete
 contract generation and diagnostics. Produce or approve requirements and designs separately,
 then pass those files to Specadia.
 
+## Generate from natural-language intent
+
+The `specadia-contract from-intent` command turns a natural-language product intent into an SRS
+and system design through a human-in-the-loop (HITL) agent pipeline, then emits coding-agent
+contracts from the approved artifacts. This path depends on the optional agent stack:
+
+```bash
+python -m pip install "specadia[full]"
+specadia-contract from-intent "Build a todo app" --harness codex
+```
+
+Progress is staged through Collector, Analyzer, Specifier, Designer, and Documenter agents, with
+interactive approval/refinement at each quality gate. Saved HITL runs can be listed and resumed:
+
+```bash
+specadia-contract runs --sessions-dir .specadia/sessions
+specadia-contract from-intent "Build a todo app" --run-id todo --resume
+```
+
+The core wheel deliberately omits the agent stack, so `from-intent` is unavailable there. If a
+core-only install (or the `.[test]` environment without `google-adk`) invokes `from-intent`, the
+CLI fails cleanly with a single hint rather than a traceback:
+
+```
+Natural-language intent-to-contract requires the agent extras. Install with: pip install "specadia[full]"
+```
+
+The deterministic `generate` and `runs` commands remain dependency-free and work in the core wheel.
+
 ## Generate a contract
 
 ```bash

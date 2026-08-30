@@ -31,5 +31,10 @@ uv lock --check
 npm pack --dry-run
 ```
 
+As part of the clean-core-wheel release checks, also verify the missing-extra hint path for
+`from-intent`: in a venv with only the core wheel installed (no `google-adk`), run
+`specadia-contract from-intent "Build a todo app"` and confirm it exits non-zero with a single
+clear `specadia[full]` install message and no traceback.
+
 Publishing, tagging, and creating a GitHub release are separate maintainer actions and are not
 performed by CI.

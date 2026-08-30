@@ -30,6 +30,7 @@ jobs:
           tests/contracts/test_generator.py
           tests/contracts/test_traceability.py
           tests/contracts/test_validation.py
+          tests/contracts/test_from_intent_optional_deps.py
       - run: python -m compileall -q src/specadia src/contracts src/diagnostics
 
   full-tests:
@@ -76,6 +77,10 @@ jobs:
           /tmp/specadia-core/bin/specadia-contract --help
           /tmp/specadia-core/bin/specadia-doctor --version
           /tmp/specadia-core/bin/specadia-doctor --help
+          /tmp/specadia-core/bin/specadia-contract from-intent --help
+          /tmp/specadia-core/bin/specadia-contract from-intent "Build a todo app" > /tmp/from-intent.out 2>&1 || test $? -eq 1
+          ! grep -q "Traceback" /tmp/from-intent.out
+          grep -q "specadia\[full\]" /tmp/from-intent.out
           /tmp/specadia-core/bin/python -m pip check
       - name: Test deterministic, path-redacted generation
         run: |
