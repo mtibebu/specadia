@@ -1,6 +1,6 @@
 [project]
 name = "specadia"
-version = "0.2.1"
+version = "0.2.2"
 description = "Convert READ-MAS requirements and designs into coding-agent contracts and harness adapters"
 authors = [{ name = "Mesfin Tibebu" }]
 readme = "README.md"
@@ -64,6 +64,7 @@ Homepage = "https://github.com/mtibebu/specadia"
 Documentation = "https://github.com/mtibebu/specadia#readme"
 Issues = "https://github.com/mtibebu/specadia/issues"
 Repository = "https://github.com/mtibebu/specadia.git"
+README-MAS = "https://github.com/NU-Academics/read-mas"
 
 [project.scripts]
 specadia = "specadia.cli:app"

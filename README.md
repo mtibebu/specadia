@@ -2,10 +2,11 @@
 
 **From approved design to implementation-ready coding-agent contracts.**
 
-Specadia is the public successor companion to READ-MAS. READ-MAS produces requirements and
-system-design artifacts; Specadia converts those artifacts into deterministic, traceable
-contracts for coding-agent harnesses and supplies thin plugin or skill adapters for those
-harnesses.
+Specadia is the public successor companion to
+[README-MAS](https://github.com/NU-Academics/read-mas), the predecessor (upstream)
+requirements-and-design system. READ-MAS produces requirements and system-design artifacts;
+Specadia converts approved artifacts into deterministic, traceable contracts for coding-agent
+harnesses and supplies thin plugin or skill adapters for those harnesses.
 
 Specadia does not start an implementation agent and does not claim that generated code satisfies
 the design. It prepares the handoff: harness instructions, source hashes, and requirement-level
