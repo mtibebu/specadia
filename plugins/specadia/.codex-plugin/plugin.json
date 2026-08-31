@@ -1,6 +1,6 @@
 {
   "name": "specadia",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Convert approved requirements and designs into traceable Codex contracts.",
   "author": {
     "name": "Mesfin Tibebu"

@@ -7,11 +7,22 @@ Contributions are welcome through GitHub issues and pull requests.
 Use Python 3.12 or 3.13 and work in a virtual environment:
 
 ```bash
-python -m venv .venv
+uv python install 3.13
+uv sync --extra test --extra dev
 source .venv/bin/activate
-python -m pip install -e ".[full,test,dev]"
 python -m pytest -q
 ```
+
+A conventional venv fallback is also supported:
+
+```bash
+python3.13 -m venv .venv
+source .venv/bin/activate
+python -m pip install -e ".[test]"
+```
+
+`.python-version` selects a supported minor (3.12 or 3.13), not an exact patch, so pyenv/asdf/uv
+resolve any installed patch of that minor.
 
 Keep the public Python distribution dependency-light and under the `specadia` namespace. Harness
 adapters should remain thin: shared contract behavior belongs in the Python engine.
