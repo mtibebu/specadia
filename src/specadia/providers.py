@@ -11,22 +11,30 @@ class LocalProvider:
   prefixes: tuple[str, ...]
   base_url_env: str
   default_base_url: str | None
+  api_key_env: str | None = None
 
   def base_url(self, environ: dict[str, str] | None = None) -> str | None:
     env = environ if environ is not None else os.environ
     return env.get(self.base_url_env) or self.default_base_url
 
+  def api_key(self, environ: dict[str, str] | None = None) -> str:
+    env = environ if environ is not None else os.environ
+    if self.api_key_env and env.get(self.api_key_env):
+      return env[self.api_key_env]
+    return self.name
+
 
 LOCAL_PROVIDERS = (
     LocalProvider("lm-studio", ("lm_studio", "lm-studio"), "LM_STUDIO_API_BASE", "http://localhost:1234/v1"),
-    LocalProvider("localai", ("localai",), "LOCALAI_API_BASE", "http://localhost:8080/v1"),
-    LocalProvider("vllm", ("vllm",), "VLLM_API_BASE", "http://localhost:8000/v1"),
+    LocalProvider("localai", ("localai",), "LOCALAI_API_BASE", "http://localhost:8080/v1", "LOCALAI_API_KEY"),
+    LocalProvider("vllm", ("vllm",), "VLLM_API_BASE", "http://localhost:8000/v1", "VLLM_API_KEY"),
     LocalProvider("llama.cpp", ("llama_cpp", "llama-cpp"), "LLAMA_CPP_API_BASE", "http://localhost:8080/v1"),
     LocalProvider(
         "openai-compatible",
         ("openai_compatible", "openai-compatible"),
         "OPENAI_COMPATIBLE_API_BASE",
         None,
+        "OPENAI_COMPATIBLE_API_KEY",
     ),
 )
 

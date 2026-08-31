@@ -1,7 +1,7 @@
 {
   "name": "specadia",
   "description": "Convert approved requirements and designs into traceable Cursor contracts.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "author": {
     "name": "Mesfin Tibebu"
   }

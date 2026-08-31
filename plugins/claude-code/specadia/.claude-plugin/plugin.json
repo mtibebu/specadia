@@ -1,6 +1,6 @@
 {
   "name": "specadia",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Convert approved requirements and designs into traceable Claude Code contracts.",
   "author": {
     "name": "Mesfin Tibebu"
