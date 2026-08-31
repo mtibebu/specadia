@@ -55,3 +55,22 @@ def test_is_local_model_and_no_google_adk():
       text=True,
   )
   assert probe.returncode == 0, probe.stderr
+
+
+def test_providers_imports_without_google():
+  probe = subprocess.run(
+      [
+          sys.executable,
+          "-c",
+          (
+              "import sys; import specadia.providers; "
+              "assert 'google.adk' not in sys.modules; "
+              "assert 'google' not in sys.modules; "
+              "assert 'litellm' not in sys.modules"
+          ),
+      ],
+      check=False,
+      capture_output=True,
+      text=True,
+  )
+  assert probe.returncode == 0, probe.stderr

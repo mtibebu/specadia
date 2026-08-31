@@ -1,4 +1,9 @@
-"""Fail when a wheel exposes packages outside Specadia's public allowlist."""
+"""Fail when a wheel exposes packages outside Specadia's public allowlist.
+
+This script requires Python >= 3.12, matching the package's ``requires-python``
+(>=3.12,<3.14). In particular it relies on 3.12+ syntax features and stdlib
+behavior (for example modern ``zipfile``/``ast`` handling).
+"""
 
 from __future__ import annotations
 

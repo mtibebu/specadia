@@ -77,8 +77,10 @@ The deterministic `generate` and `runs` commands remain dependency-free and work
 
 ## Generate a contract
 
+The canonical contract-generation command is `specadia-contract generate`:
+
 ```bash
-specadia contract requirements.md \
+specadia-contract generate requirements.md \
   --design design.md \
   --harness codex \
   --output-dir .specadia/contracts
@@ -93,6 +95,10 @@ specadia-contract generate requirements.md \
   --harness claude \
   --harness generic
 ```
+
+> Note: the primary CLI subcommand `specadia contract ...` is a retained alias that
+> behaves identically to `specadia-contract generate ...`. Both resolve to the same
+> `generate_contract` command and accept the same options.
 
 Existing output files are preserved unless `--force` is supplied. Review generated instructions
 before placing them at a target repository root. If a repository already has `AGENTS.md` or
