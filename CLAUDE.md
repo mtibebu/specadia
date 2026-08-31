@@ -4,10 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Specadia converts approved READ-MAS software requirements specifications (SRS) and optional
-system designs into deterministic implementation contracts (`AGENTS.md`, `CLAUDE.md`, or a
-generic harness file) for coding agents. The public core is deliberately offline and does not
-generate requirements or designs from a raw intent.
+Specadia is the public successor companion to [README-MAS](https://github.com/NU-Academics/read-mas),
+the predecessor (upstream) requirements-and-design system. Specadia converts approved SRS and
+optional system designs into deterministic implementation contracts (`AGENTS.md`, `CLAUDE.md`, or
+a generic harness file) for coding agents. The core wheel installs only deterministic contract
+generation and diagnostics; intent-to-SRS/design generation is available on
+`specadia-contract from-intent` with the optional `specadia[full]` agent dependencies.
 
 The repository doubles as a distributable multi-harness plugin: the same root `skills/` and
 manifest files let Claude Code, Codex, Cursor, Kimi, Cline, Grok, Devin, Copilot, Factory Droid,
