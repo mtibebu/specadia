@@ -1,6 +1,6 @@
 [project]
 name = "specadia"
-version = "0.2.2"
+version = "0.2.3"
 description = "Convert READ-MAS requirements and designs into coding-agent contracts and harness adapters"
 authors = [{ name = "Mesfin Tibebu" }]
 readme = "README.md"

@@ -20,6 +20,16 @@ duplicated here.
 ## Commands
 
 ```bash
+# Create the environment (macOS-first; venv fallback follows)
+uv python install 3.13
+uv sync --extra test --extra dev
+source .venv/bin/activate
+
+# Conventional venv fallback
+python3.13 -m venv .venv
+source .venv/bin/activate
+python -m pip install -e ".[test]"
+
 # Install (editable); use the full extra only when maintaining legacy internals
 python -m pip install -e .                              # core: contract generation, doctor
 python -m pip install -e ".[test]"                     # core development and tests
@@ -148,6 +158,8 @@ Agent outputs (SRS docs, design docs, logs) are saved to `runs/{run_id}/logs/` v
 - Formatter: **Pyink** (Black-based), 2-space indentation, 100-char line length
   (config in `[tool.pyink]` in `pyproject.toml`)
 - Python >= 3.12, < 3.14
+- `.python-version` selects a supported minor (3.12 or 3.13), not an exact patch, so pyenv/asdf/uv
+  resolve any installed patch of that minor.
 - Logging: `loguru` via `src/utils/logger.py`
 - `pytest.ini_options` in `pyproject.toml` defines a `live` marker for tests that call a real,
   explicitly-configured external model provider; these are excluded from the default run.

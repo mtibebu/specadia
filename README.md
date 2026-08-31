@@ -38,10 +38,21 @@ For a source checkout:
 ```bash
 git clone https://github.com/mtibebu/specadia.git
 cd specadia
-python -m venv .venv
+uv python install 3.13
+uv sync --extra test
+source .venv/bin/activate
+```
+
+A conventional venv fallback is also supported:
+
+```bash
+python3.13 -m venv .venv
 source .venv/bin/activate
 python -m pip install -e ".[test]"
 ```
+
+`.python-version` selects a supported minor (3.12 or 3.13), not an exact patch, so pyenv/asdf/uv
+resolve any installed patch of that minor.
 
 The core wheel intentionally has no Google ADK dependency. It installs only deterministic
 contract generation and diagnostics. Produce or approve requirements and designs separately,

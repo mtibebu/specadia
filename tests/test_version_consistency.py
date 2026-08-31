@@ -10,7 +10,7 @@ from specadia.contracts.cli import app as contract_app
 
 
 ROOT = Path(__file__).resolve().parent.parent
-EXPECTED_VERSION = "0.2.2"
+EXPECTED_VERSION = "0.2.3"
 
 
 def test_package_version_is_expected():
