@@ -7,10 +7,10 @@ on:
     inputs:
       tag:
         description: >-
-          Existing annotated release tag to publish (for example v0.2.7). Must
-          already exist on origin, be an annotated tag, and match v<version> in
-          pyproject.toml. Used only to recover a missed release event; it does
-          not move or recreate the tag or release.
+          Existing release tag to publish (for example v0.2.7). Must already
+          exist on origin, be an annotated or lightweight tag, and match
+          v<version> in pyproject.toml. Used only to recover a missed release
+          event; it does not move or recreate the tag or release.
         required: true
         type: string
 
@@ -48,8 +48,8 @@ jobs:
           cache: pip
 
       # Validate the tag before using it further, then check out the exact
-      # annotated tag. The value is passed via env and quoted; it is never
-      # interpolated into a shell command.
+      # annotated or lightweight tag. The value is passed via env and quoted;
+      # it is never interpolated into a shell command.
       - name: Validate and check out release tag
         env:
           RELEASE_TAG: ${{ env.RELEASE_TAG }}

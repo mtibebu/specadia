@@ -7,7 +7,8 @@ to publish (``github.event.release.tag_name`` for a release event, or the
 Safety contract
 ---------------
 The sole job of this script is to refuse anything that is not an existing,
-annotated ``vMAJOR.MINOR.PATCH`` tag whose commit's ``pyproject.toml`` version
+annotated or lightweight ``vMAJOR.MINOR.PATCH`` tag whose commit's
+``pyproject.toml`` version
 matches the tag. It is run under ``persist-credentials: false`` and receives the
 candidate tag as a positional argument (never shell-interpolated). It performs
 no network access and only runs ``git`` subcommands with the tag passed as a
@@ -67,14 +68,18 @@ def validate(tag: str) -> int:
         return reject(f"tag {tag!r} does not exist under refs/tags")
 
     obj_type = run_git("cat-file", "-t", ref)
-    if obj_type != "tag":
-        return reject(f"{ref!r} is a {obj_type!r}, not an annotated tag")
+    if obj_type not in ("tag", "commit"):
+        return reject(
+            f"{ref!r} is a {obj_type!r}, not an annotated or lightweight tag"
+        )
 
     # Check out the exact tag (detached). The value already matched the strict
     # pattern above, so it cannot act as a flag or shell metacharacter.
     subprocess.run(["git", "checkout", "--detach", ref], check=True)
 
-    tag_commit = run_git("rev-parse", f"{ref}^{{}}")
+    # Dereference the tag to its target commit: peels an annotated tag and
+    # returns the commit directly for a lightweight tag.
+    tag_commit = run_git("rev-parse", f"{ref}^{{commit}}")
     head = run_git("rev-parse", "HEAD")
     if tag_commit != head:
         return reject(
@@ -92,7 +97,7 @@ def validate(tag: str) -> int:
             f"tag {tag!r} does not match project version {expected!r}"
         )
 
-    print(f"::notice::publishing annotated tag {tag!r} -> {tag_commit}")
+    print(f"::notice::publishing annotated or lightweight tag {tag!r} -> {tag_commit}")
     return 0
 
 
