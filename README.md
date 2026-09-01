@@ -39,17 +39,27 @@ For a source checkout:
 git clone https://github.com/mtibebu/specadia.git
 cd specadia
 uv python install 3.13
-uv sync --extra test
+uv sync --all-extras
 source .venv/bin/activate
 ```
+
+`--all-extras` installs the `full`, `test`, and `dev` extras together. A bare
+`python3.13` / `python -m pytest` / `python -m build` does **not** include `pytest`,
+`build`, or `twine`, because those live only in the `test` and `dev` extras; you
+must install the extras first (or use `uv run` as shown under
+[Development](#development)).
 
 A conventional venv fallback is also supported:
 
 ```bash
 python3.13 -m venv .venv
 source .venv/bin/activate
-python -m pip install -e ".[test]"
+python -m pip install -e ".[full,test,dev]"
 ```
+
+Use `.venv/bin/python` (or the activated env) consistently for all subsequent
+`python` commands so `pytest`, `build`, and `twine` resolve from the same
+environment.
 
 `.python-version` selects a supported minor (3.12 or 3.13), not an exact patch, so pyenv/asdf/uv
 resolve any installed patch of that minor.
@@ -159,12 +169,24 @@ pi install git:github.com/mtibebu/specadia
 
 ## Development
 
+Prefer uv so every command runs against the same managed interpreter with the
+full set of extras (`full`, `test`, and `dev` — including `build` and `twine`):
+
 ```bash
-python -m pip install -e ".[full,test,dev]"
-python -m pytest -q
-python -m build
-python -m twine check dist/*
+uv python install 3.13
+uv sync --all-extras
+uv run python -m pytest -q
+uv run python -m build
+uv run python -m twine check dist/*
 ```
+
+If your shell does not expand `dist/*` (or no artifacts exist yet), run `uv run python -m build`
+first, then pass the matched files explicitly, e.g.
+`uv run python -m twine check dist/*` or `uv run python -m twine check $(ls dist | sed 's#^#dist/#')`.
+
+The conventional venv equivalent is `python -m pip install -e ".[full,test,dev]"` followed by
+`python -m pytest -q`, `python -m build`, and `python -m twine check dist/*` — the uv-first path
+above is preferred and must include `build`/`twine` via `--all-extras`.
 
 CI tests Python 3.12 and 3.13, builds both distribution formats, checks wheel contents against an
 allowlist, and runs the installed core CLIs in an environment without Google ADK.

@@ -22,13 +22,13 @@ duplicated here.
 ```bash
 # Create the environment (macOS-first; venv fallback follows)
 uv python install 3.13
-uv sync --extra test --extra dev
+uv sync --all-extras
 source .venv/bin/activate
 
-# Conventional venv fallback
+# Conventional venv fallback (install full+test+dev so build/twine exist)
 python3.13 -m venv .venv
 source .venv/bin/activate
-python -m pip install -e ".[test]"
+python -m pip install -e ".[full,test,dev]"
 
 # Install (editable); use the full extra only when maintaining legacy internals
 python -m pip install -e .                              # core: contract generation, doctor
@@ -46,12 +46,17 @@ specadia-doctor --no-network --json
 # Format code (pyink, 2-space indent, 100-char line length)
 pyink src/
 
-# Tests
-pytest                                    # full suite, no model provider required
-pytest tests/contracts/test_workflow.py   # single file
-pytest tests/contracts/test_workflow.py::test_name  # single test
-SPECADIA_LIVE_MODEL=openai/gpt-5 pytest -m live      # opt-in live-model smoke test
-python -m compileall -q src               # release verification
+# Tests (prefer uv run for the managed interpreter)
+uv run python -m pytest -q                              # full suite, no model provider required
+uv run python -m pytest -q tests/contracts/test_workflow.py  # single file
+uv run python -m pytest -q tests/contracts/test_workflow.py::test_name  # single test
+SPECADIA_LIVE_MODEL=openai/gpt-5 uv run python -m pytest -m live  # opt-in live-model smoke test
+uv run python -m compileall -q src                     # release verification
+
+# Build and distribution checks (require the full/test/dev extras via --all-extras)
+uv run python -m build
+uv run python -m twine check dist/*
+uv lock --check
 ```
 
 ## Architecture

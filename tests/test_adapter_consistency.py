@@ -60,6 +60,6 @@ def test_readme_links_readmas_and_states_relationship():
 def test_pyproject_readmas_url_and_version():
   with (ROOT / "pyproject.toml").open("rb") as fh:
     project = tomllib.load(fh)["project"]
-  assert project["version"] == "0.2.3"
+  assert project["version"] == "0.2.4"
   urls = project.get("urls", {})
   assert README_MAS_URL in urls.values(), f"pyproject URLs missing READ-MAS link: {urls}"
