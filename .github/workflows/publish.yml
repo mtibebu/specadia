@@ -7,7 +7,7 @@ on:
     inputs:
       tag:
         description: >-
-          Existing annotated release tag to publish (for example v0.2.4). Must
+          Existing annotated release tag to publish (for example v0.2.7). Must
           already exist on origin, be an annotated tag, and match v<version> in
           pyproject.toml. Used only to recover a missed release event; it does
           not move or recreate the tag or release.

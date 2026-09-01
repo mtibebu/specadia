@@ -11,7 +11,7 @@ from specadia.contracts.cli import app as contract_app
 
 
 ROOT = Path(__file__).resolve().parent.parent
-EXPECTED_VERSION = "0.2.4"
+EXPECTED_VERSION = "0.2.7"
 
 
 def test_package_version_is_expected():
@@ -44,7 +44,7 @@ _VERSION_JSON_FILES = [
 ]
 
 
-def test_all_package_and_plugin_manifests_are_0_2_4():
+def test_all_package_and_plugin_manifests_are_0_2_7():
   for rel in _VERSION_JSON_FILES:
     path = ROOT / rel
     assert path.exists(), f"missing manifest: {rel}"
