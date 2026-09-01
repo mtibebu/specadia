@@ -59,9 +59,27 @@ performed by CI.
 
 ### Publishing to PyPI
 
-Merge the `.github/workflows/publish.yml` trusted-publishing workflow into `main` before creating
-a GitHub Release, then publish using the existing exact release tag (for example `v0.2.4`). Do not
-move or recreate the tag: the workflow checks out that tag and verifies it equals `v` plus the
-`pyproject.toml` project version before building. Publishing the GitHub Release triggers PyPI
-OIDC trusted publishing, so no PyPI token or secret is stored or needed. After the release is
-published, verify the distribution on https://pypi.org/p/specadia.
+Publishing is performed by the `.github/workflows/publish.yml` trusted-publishing workflow. It runs
+automatically when a GitHub Release is published for an existing annotated tag, and can be run
+manually to recover a missed release event. It checks out the exact release tag and verifies it
+equals `v` plus the `pyproject.toml` project version before building. Publishing uses PyPI OIDC
+trusted publishing, so no PyPI token or secret is stored or needed.
+
+Normal path: publish a GitHub Release for an existing annotated `vMAJOR.MINOR.PATCH` tag (for
+example `v0.2.4`); the workflow runs automatically and publishes to https://pypi.org/p/specadia.
+Do not move or recreate the tag after the release is created.
+
+Recovering a missed release event (for example if the Release was created before `publish.yml`
+reached `main`, so no workflow run fired):
+
+1. On GitHub, open **Actions → Publish to PyPI → Run workflow**.
+2. Leave the **Branch** as `main`.
+3. Enter the exact existing release tag (for example `v0.2.4`) in the **tag** field.
+4. If a `pypi` environment approval is configured, approve it when prompted.
+5. Click **Run workflow** and watch the run until it completes.
+
+The manual dispatch builds only from the existing annotated release tag you specify. It does not
+move or recreate the tag or the GitHub Release, does not bump the package version, and does not run
+for arbitrary branches or commits (the input must be an existing annotated `vMAJOR.MINOR.PATCH` tag
+whose commit's `pyproject.toml` version matches). After the run, verify the distribution on
+https://pypi.org/p/specadia.
