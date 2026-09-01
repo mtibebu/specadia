@@ -56,3 +56,12 @@ clear `specadia[full]` install message and no traceback.
 
 Publishing, tagging, and creating a GitHub release are separate maintainer actions and are not
 performed by CI.
+
+### Publishing to PyPI
+
+Merge the `.github/workflows/publish.yml` trusted-publishing workflow into `main` before creating
+a GitHub Release, then publish using the existing exact release tag (for example `v0.2.4`). Do not
+move or recreate the tag: the workflow checks out that tag and verifies it equals `v` plus the
+`pyproject.toml` project version before building. Publishing the GitHub Release triggers PyPI
+OIDC trusted publishing, so no PyPI token or secret is stored or needed. After the release is
+published, verify the distribution on https://pypi.org/p/specadia.
