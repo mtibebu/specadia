@@ -1,9 +1,9 @@
 """Unit + git-backed tests for scripts/validate_release_tag.py.
 
-The publish workflow must only ever check out an existing annotated release
-tag whose commit's pyproject.toml version matches. These tests exercise the
-pure syntax gate directly and the full validation path against a throwaway
-local git repository (no network).
+The publish workflow must only ever check out an existing annotated or
+lightweight release tag whose commit's pyproject.toml version matches. These
+tests exercise the pure syntax gate directly and the full validation path
+against a throwaway local git repository (no network).
 """
 
 from __future__ import annotations
@@ -37,6 +37,7 @@ import validate_release_tag as vrt  # noqa: E402
         ("main", False),
         ("refs/tags/v0.2.7", False),
         ("abc123def", False),
+        ("a" * 40, False),
         ("v0.2.7 ", False),
         ("v0.2.7;rm", False),
         ("", False),
@@ -87,12 +88,42 @@ def test_valid_annotated_tag_passes(tmp_path):
     assert result.returncode == 0, result.stderr
 
 
-def test_lightweight_tag_rejected(tmp_path):
+def test_valid_lightweight_tag_passes(tmp_path):
     repo = _make_repo(tmp_path, "0.2.7")
     _lightweight_tag(repo, "v0.2.7")
     result = _run_script(repo, "v0.2.7")
+    assert result.returncode == 0, result.stderr
+
+
+@pytest.mark.parametrize("bad", ["main", "refs/tags/v0.2.7", "a" * 40])
+def test_branch_sha_refprefix_rejected(tmp_path, bad):
+    repo = _make_repo(tmp_path, "0.2.7")
+    result = _run_script(repo, bad)
     assert result.returncode != 0
-    assert "annotated tag" in result.stderr
+    assert "must match" in result.stderr
+
+
+def test_tag_pointing_at_wrong_commit_rejected(tmp_path, monkeypatch):
+    repo = _make_repo(tmp_path, "0.2.7")
+    _lightweight_tag(repo, "v0.2.7")  # points at the initial commit
+    (repo / "extra.txt").write_text("x", encoding="utf-8")
+    _git(repo, "add", "extra.txt")
+    _git(repo, "commit", "-qm", "second")  # HEAD moves to a later commit
+
+    real_run = subprocess.run
+
+    def refusing_checkout(args, **kwargs):
+        # Simulate a checkout that lands on the wrong commit (current HEAD)
+        # instead of the tag's commit, so dereferenced commit != checked-out
+        # HEAD and the validator must reject.
+        if isinstance(args, (list, tuple)) and args[:2] == ["git", "checkout"]:
+            return real_run(["git", "checkout", "--detach", "HEAD"], **kwargs)
+        return real_run(args, **kwargs)
+
+    monkeypatch.chdir(repo)
+    monkeypatch.setattr(vrt.subprocess, "run", refusing_checkout)
+
+    assert vrt.validate("v0.2.7") != 0
 
 
 def test_missing_tag_rejected(tmp_path):

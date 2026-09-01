@@ -11,7 +11,7 @@ keep publishing safe:
     ``id-token: write`` appears only in the ``publish`` job;
   * every action is pinned to an immutable 40-char commit SHA;
   * the release tag is checked out only after being validated as an existing
-    annotated ``vMAJOR.MINOR.PATCH`` tag that equals ``v`` + the
+    annotated or lightweight ``vMAJOR.MINOR.PATCH`` tag that equals ``v`` + the
     ``pyproject.toml`` project version;
   * the tag is passed through env and quoted, never shell-interpolated;
   * publishing relies on OIDC trusted publishing, so no token is referenced.
@@ -86,14 +86,15 @@ def test_tag_is_validated_before_build():
     assert '"$RELEASE_TAG"' in WORKFLOW
 
 
-def test_validator_enforces_annotated_strict_tag():
+def test_validator_enforces_annotated_or_lightweight_tag():
     assert r"^v\d+\.\d+\.\d+$" in VALIDATOR
     assert "refs/tags" in VALIDATOR
     assert "cat-file" in VALIDATOR
     assert '"tag"' in VALIDATOR
+    assert '"commit"' in VALIDATOR
     assert "rev-parse" in VALIDATOR
     assert "pyproject.toml" in VALIDATOR
-    assert "^{{}}" in VALIDATOR
+    assert "^{{commit}}" in VALIDATOR
 
 
 def test_all_actions_pinned_to_immutable_sha():
