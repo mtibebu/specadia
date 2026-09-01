@@ -139,6 +139,8 @@ specadia-contract --help
 See the [Bookmark Buddy demo](examples/bookmark-buddy/README.md) for a self-contained,
 credential-free walkthrough of intent → contract and determinism checks.
 
+[Watch the two-minute demo](examples/bookmark-buddy/assets/specadia-bookmark-buddy-demo.mp4).
+
 ## Harness adapters
 
 ### Claude Code

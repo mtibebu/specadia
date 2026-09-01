@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <style>
+    * { box-sizing: border-box; }
+    html, body { width: 1920px; height: 1080px; margin: 0; overflow: hidden; background: #141620; }
+    img { width: 1920px; height: 1080px; display: block; object-fit: cover; }
+    .caption {
+      position: absolute;
+      left: 150px;
+      right: 150px;
+      bottom: 42px;
+      padding: 18px 28px;
+      border-radius: 14px;
+      background: rgba(8, 10, 16, 0.88);
+      color: #ffffff;
+      font: 500 31px/1.32 -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+      text-align: center;
+      text-wrap: balance;
+      box-shadow: 0 8px 26px rgba(0, 0, 0, 0.35);
+    }
+  </style>
+</head>
+<body>
+  <img id="frame" alt="">
+  <div class="caption" id="caption"></div>
+  <script>
+    const params = new URLSearchParams(location.search);
+    document.getElementById("frame").src = params.get("image");
+    document.getElementById("caption").textContent = params.get("caption");
+  </script>
+</body>
+</html>
