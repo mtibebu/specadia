@@ -67,7 +67,7 @@ def test_no_test_only_flow_before_build_twine():
   assert "uv run python -m build" in claude
 
 
-def test_version_surfaces_are_0_2_4():
+def test_version_surfaces_are_0_2_7():
   with (ROOT / "pyproject.toml").open("rb") as fh:
     assert tomllib.load(fh)["project"]["version"] == EXPECTED_VERSION
 
