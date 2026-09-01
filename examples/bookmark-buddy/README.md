@@ -1,8 +1,8 @@
 # Bookmark Buddy — Specadia Public Demo
 
 This demo shows how Specadia turns a plain product intent into a traceable,
-implementation-ready contract for a coding agent, using only deterministic,
-credential-free commands.
+implementation-ready contract for a coding agent, in about two minutes, using
+only deterministic, credential-free commands.
 
 ## What it demonstrates
 

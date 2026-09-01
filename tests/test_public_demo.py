@@ -149,6 +149,16 @@ def test_committed_contract_has_project_name_and_requirement_ids():
     assert manifest["project_name"] == "Bookmark Buddy"
 
 
+def test_recording_target_is_two_minutes_and_no_stale_timing():
+    recording = (DEMO / "RECORDING.md").read_text(encoding="utf-8")
+    assert "~2:00" in recording
+    assert "75s" not in recording.lower()
+    assert "1:50" in recording
+
+    demo_readme = (DEMO / "README.md").read_text(encoding="utf-8")
+    assert "two minutes" in demo_readme
+
+
 def test_committed_manifest_uses_relative_paths():
     manifest = json.loads(
         (DEMO / "contracts" / "contract-manifest.json").read_text(encoding="utf-8")
