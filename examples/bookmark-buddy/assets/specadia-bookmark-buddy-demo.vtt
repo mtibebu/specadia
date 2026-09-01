@@ -1,0 +1,28 @@
+WEBVTT
+
+00:00.000 --> 00:10.000
+This is Bookmark Buddy, a tiny local-first CLI for saving and searching bookmarks. It starts from one plain-English intent.
+
+00:10.000 --> 00:22.000
+Save, organize, and search bookmarks, all on your own machine. No accounts, cloud services, or hidden dependencies.
+
+00:22.000 --> 00:44.000
+A human turns that intent into this requirements document, the source of truth. Specadia does not derive it; it is a reviewed, hand-authored input.
+
+00:44.000 --> 00:58.000
+A short hand-authored design adds the architecture and file structure, making implementation choices visible before coding begins.
+
+00:58.000 --> 01:22.000
+Now Specadia takes over. Generate runs twice with the same inputs, without credentials or a live model, then compares both outputs.
+
+01:22.000 --> 01:32.000
+The runs are byte-for-byte identical, and no local absolute paths leak into the generated artifacts.
+
+01:32.000 --> 01:44.000
+The coding-agent contract maps every requirement and acceptance criterion back to its reviewed source.
+
+01:44.000 --> 01:54.000
+The manifest hashes each input and output, creating a compact, verifiable chain from source documents to contract.
+
+01:54.000 --> 02:00.000
+Install Specadia from PyPI, and give your coding agent a real contract.

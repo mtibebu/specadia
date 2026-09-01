@@ -4,6 +4,14 @@ This demo shows how Specadia turns a plain product intent into a traceable,
 implementation-ready contract for a coding agent, in about two minutes, using
 only deterministic, credential-free commands.
 
+## Watch the two-minute demo
+
+[![Watch the Specadia Bookmark Buddy demo](assets/specadia-bookmark-buddy-demo-poster.png)](assets/specadia-bookmark-buddy-demo.mp4)
+
+[Download the MP4](assets/specadia-bookmark-buddy-demo.mp4) ·
+[Read the captions](assets/specadia-bookmark-buddy-demo.vtt) ·
+[Follow the recording script](RECORDING.md)
+
 ## What it demonstrates
 
 1. A short product [intent](intent.md) is distilled by a human into a

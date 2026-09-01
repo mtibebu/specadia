@@ -34,6 +34,9 @@ REQUIRED_FILES = [
     "run.sh",
     "README.md",
     "RECORDING.md",
+    "assets/specadia-bookmark-buddy-demo.mp4",
+    "assets/specadia-bookmark-buddy-demo-poster.png",
+    "assets/specadia-bookmark-buddy-demo.vtt",
 ]
 
 
@@ -125,6 +128,35 @@ def test_demo_readme_links_to_own_inputs():
     demo_readme = (DEMO / "README.md").read_text(encoding="utf-8")
     for rel in ("intent.md", "requirements.md", "design.md"):
         assert rel in demo_readme
+
+
+def test_demo_readme_links_to_video_assets():
+    demo_readme = (DEMO / "README.md").read_text(encoding="utf-8")
+    for rel in (
+        "assets/specadia-bookmark-buddy-demo.mp4",
+        "assets/specadia-bookmark-buddy-demo-poster.png",
+        "assets/specadia-bookmark-buddy-demo.vtt",
+    ):
+        assert rel in demo_readme
+
+    root_readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    assert "examples/bookmark-buddy/assets/specadia-bookmark-buddy-demo.mp4" in root_readme
+
+
+def test_demo_media_assets_are_portable_and_canonical():
+    video = DEMO / "assets" / "specadia-bookmark-buddy-demo.mp4"
+    poster = DEMO / "assets" / "specadia-bookmark-buddy-demo-poster.png"
+    captions = DEMO / "assets" / "specadia-bookmark-buddy-demo.vtt"
+
+    assert b"ftyp" in video.read_bytes()[:32], "video must be an MP4 container"
+    assert video.stat().st_size < 10 * 1024 * 1024, "keep the README video lightweight"
+    assert poster.read_bytes().startswith(b"\x89PNG\r\n\x1a\n")
+
+    caption_text = captions.read_text(encoding="utf-8")
+    assert caption_text.startswith("WEBVTT\n")
+    assert "01:54.000 --> 02:00.000" in caption_text
+    assert "PyPI" in caption_text
+    assert "Pie P I" not in caption_text
 
 
 def test_read_mas_mentioned_at_most_once_in_demo_dir():
