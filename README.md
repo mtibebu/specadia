@@ -134,6 +134,11 @@ specadia doctor --model ollama/qwen3 --no-network
 specadia-contract --help
 ```
 
+## Demo
+
+See the [Bookmark Buddy demo](examples/bookmark-buddy/README.md) for a self-contained,
+credential-free walkthrough of intent → contract and determinism checks.
+
 ## Harness adapters
 
 ### Claude Code
