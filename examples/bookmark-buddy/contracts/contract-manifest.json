@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "project_name": "Bookmark Buddy",
+  "sources": [
+    {
+      "kind": "spec",
+      "path": "requirements.md",
+      "sha256": "a0cf9df4bd30dae8d85a3efe83c1a652ffe4a61795ba4a69292195c4324acac1"
+    },
+    {
+      "kind": "design",
+      "path": "design.md",
+      "sha256": "7708300a918b903f74962738a1eb81b96cfd8075881232bf45ca9c59472043a1"
+    }
+  ],
+  "contracts": [
+    {
+      "harness": "codex",
+      "path": "AGENTS.md",
+      "sha256": "72077b62874010459d1b29293609bfeff2732103b601d20e47c1494b218dd0a9"
+    }
+  ]
+}
