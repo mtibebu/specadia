@@ -9,7 +9,7 @@
       "name": "specadia",
       "source": "./plugins/claude-code/specadia",
       "description": "Convert approved requirements and designs into traceable Claude Code contracts.",
-      "version": "0.2.4"
+      "version": "0.2.7"
     }
   ]
 }

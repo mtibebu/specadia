@@ -25,20 +25,20 @@ import validate_release_tag as vrt  # noqa: E402
 @pytest.mark.parametrize(
     ("tag", "ok"),
     [
-        ("v0.2.4", True),
+        ("v0.2.7", True),
         ("v1.0.0", True),
         ("v12.34.56", True),
         ("v0.2", False),
-        ("0.2.4", False),
-        ("v0.2.4.1", False),
-        ("v0.2.4-rc1", False),
-        ("v0.2.4rc1", False),
-        ("v0.2.4+build", False),
+        ("0.2.7", False),
+        ("v0.2.7.1", False),
+        ("v0.2.7-rc1", False),
+        ("v0.2.7rc1", False),
+        ("v0.2.7+build", False),
         ("main", False),
-        ("refs/tags/v0.2.4", False),
+        ("refs/tags/v0.2.7", False),
         ("abc123def", False),
-        ("v0.2.4 ", False),
-        ("v0.2.4;rm", False),
+        ("v0.2.7 ", False),
+        ("v0.2.7;rm", False),
         ("", False),
     ],
 )
@@ -81,38 +81,38 @@ def _run_script(repo: Path, tag: str) -> subprocess.CompletedProcess:
 
 
 def test_valid_annotated_tag_passes(tmp_path):
-    repo = _make_repo(tmp_path, "0.2.4")
-    _annotated_tag(repo, "v0.2.4")
-    result = _run_script(repo, "v0.2.4")
+    repo = _make_repo(tmp_path, "0.2.7")
+    _annotated_tag(repo, "v0.2.7")
+    result = _run_script(repo, "v0.2.7")
     assert result.returncode == 0, result.stderr
 
 
 def test_lightweight_tag_rejected(tmp_path):
-    repo = _make_repo(tmp_path, "0.2.4")
-    _lightweight_tag(repo, "v0.2.4")
-    result = _run_script(repo, "v0.2.4")
+    repo = _make_repo(tmp_path, "0.2.7")
+    _lightweight_tag(repo, "v0.2.7")
+    result = _run_script(repo, "v0.2.7")
     assert result.returncode != 0
     assert "annotated tag" in result.stderr
 
 
 def test_missing_tag_rejected(tmp_path):
-    repo = _make_repo(tmp_path, "0.2.4")
+    repo = _make_repo(tmp_path, "0.2.7")
     result = _run_script(repo, "v9.9.9")
     assert result.returncode != 0
     assert "does not exist" in result.stderr
 
 
 def test_version_mismatch_rejected(tmp_path):
-    repo = _make_repo(tmp_path, "0.2.5")
-    _annotated_tag(repo, "v0.2.4")
-    result = _run_script(repo, "v0.2.4")
+    repo = _make_repo(tmp_path, "0.2.8")
+    _annotated_tag(repo, "v0.2.7")
+    result = _run_script(repo, "v0.2.7")
     assert result.returncode != 0
     assert "does not match project version" in result.stderr
 
 
 def test_malformed_tag_rejected_without_git(tmp_path):
-    repo = _make_repo(tmp_path, "0.2.4")
-    result = _run_script(repo, "v0.2.4;touch pwned")
+    repo = _make_repo(tmp_path, "0.2.7")
+    result = _run_script(repo, "v0.2.7;touch pwned")
     assert result.returncode != 0
     assert "must match" in result.stderr
     assert not (repo / "pwned").exists()
