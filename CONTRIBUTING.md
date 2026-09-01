@@ -8,9 +8,9 @@ Use Python 3.12 or 3.13 and work in a virtual environment:
 
 ```bash
 uv python install 3.13
-uv sync --extra test --extra dev
+uv sync --all-extras
 source .venv/bin/activate
-python -m pytest -q
+uv run python -m pytest -q
 ```
 
 A conventional venv fallback is also supported:
@@ -18,8 +18,11 @@ A conventional venv fallback is also supported:
 ```bash
 python3.13 -m venv .venv
 source .venv/bin/activate
-python -m pip install -e ".[test]"
+python -m pip install -e ".[full,test,dev]"
 ```
+
+Install the `full`, `test`, and `dev` extras (or `--all-extras`) so that `pytest`,
+`build`, and `twine` are all present before running tests or release checks.
 
 `.python-version` selects a supported minor (3.12 or 3.13), not an exact patch, so pyenv/asdf/uv
 resolve any installed patch of that minor.
@@ -34,10 +37,14 @@ that changed. Do not include credentials, generated run logs, local indexes, or 
 
 Maintainers should build from a clean checkout and inspect the artifacts before publishing:
 
+The `test`/`dev`/`full` extras (or `--all-extras`) must be installed first so that
+`build` and `twine` exist. With those extras present, run from the managed
+interpreter:
+
 ```bash
-python -m build
-python -m twine check dist/*
-python scripts/audit_distribution.py dist/*.whl
+uv run python -m build
+uv run python -m twine check dist/*
+uv run python scripts/audit_distribution.py dist/*.whl
 uv lock --check
 npm pack --dry-run
 ```
