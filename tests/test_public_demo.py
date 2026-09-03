@@ -33,7 +33,6 @@ REQUIRED_FILES = [
     "contracts/contract-manifest.json",
     "run.sh",
     "README.md",
-    "RECORDING.md",
     "assets/specadia-bookmark-buddy-demo.mp4",
     "assets/specadia-bookmark-buddy-demo-poster.png",
     "assets/specadia-bookmark-buddy-demo.vtt",
@@ -162,7 +161,6 @@ def test_demo_media_assets_are_portable_and_canonical():
 def test_read_mas_is_mentioned_lightly_and_attribution_is_accurate():
     narrative_files = (
         DEMO / "README.md",
-        DEMO / "RECORDING.md",
         DEMO / "assets" / "specadia-bookmark-buddy-demo.vtt",
     )
     for path in narrative_files:
@@ -192,11 +190,12 @@ def test_committed_contract_has_project_name_and_requirement_ids():
     assert manifest["project_name"] == "Bookmark Buddy"
 
 
-def test_recording_target_is_two_minutes_and_no_stale_timing():
-    recording = (DEMO / "RECORDING.md").read_text(encoding="utf-8")
-    assert "~2:00" in recording
-    assert "75s" not in recording.lower()
-    assert "1:50" in recording
+def test_demo_targets_two_minutes_and_no_stale_timing():
+    captions = (DEMO / "assets" / "specadia-bookmark-buddy-demo.vtt").read_text(
+        encoding="utf-8"
+    )
+    assert "02:00.000" in captions
+    assert "75s" not in captions.lower()
 
     demo_readme = (DEMO / "README.md").read_text(encoding="utf-8")
     assert "two minutes" in demo_readme

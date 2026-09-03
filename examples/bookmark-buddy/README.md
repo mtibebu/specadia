@@ -9,8 +9,7 @@ only deterministic, credential-free commands.
 [![Watch the Specadia Bookmark Buddy demo](assets/specadia-bookmark-buddy-demo-poster.png)](assets/specadia-bookmark-buddy-demo.mp4)
 
 [Download the MP4](assets/specadia-bookmark-buddy-demo.mp4) ·
-[Read the captions](assets/specadia-bookmark-buddy-demo.vtt) ·
-[Follow the recording script](RECORDING.md)
+[Read the captions](assets/specadia-bookmark-buddy-demo.vtt)
 
 ## What it demonstrates
 
